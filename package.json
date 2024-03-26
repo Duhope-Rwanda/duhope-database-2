@@ -107,6 +107,9 @@
       "react-app/jest"
     ]
   },
+  "resolutions": {
+    "webpack": "5.41.1"
+},
   "browserslist": {
     "production": [
       ">0.2%",
