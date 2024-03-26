@@ -1,0 +1,196 @@
+//
+// Buttons Base
+//
+
+// Button
+.btn {
+  --#{$prefix}btn-color: var(--#{$prefix}body-color);
+
+  // Reset outline
+  outline: none !important;
+
+  // Reset focus shadow
+  &:not(.btn-shadow):not(.shadow):not(.shadow-sm):not(.shadow-lg):not(.shadow-xs) {
+    box-shadow: none;
+  }
+
+  // Remove border
+  &:not(.btn-outline):not(.btn-dashed):not(.btn-bordered):not(.border-hover):not(.border-active):not(.btn-flush):not(.btn-icon) {
+    border: 0;
+    padding: calc(#{$btn-padding-y} + #{$btn-border-width})
+      calc(#{$btn-padding-x} + #{$btn-border-width});
+
+    &.btn-lg {
+      padding: calc(#{$btn-padding-y-lg} + #{$btn-border-width})
+        calc(#{$btn-padding-x-lg} + #{$btn-border-width});
+    }
+
+    &.btn-sm {
+      padding: calc(#{$btn-padding-y-sm} + #{$btn-border-width})
+        calc(#{$btn-padding-x-sm} + #{$btn-border-width});
+    }
+  }
+
+  // Link
+  &.btn-link {
+    border: 0;
+    border-radius: 0;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    text-decoration: none;
+    font-weight: $btn-font-weight;
+  }
+
+  // Outline
+  &.btn-outline:not(.btn-outline-dashed) {
+    border: 1px solid $input-border-color;
+  }
+
+  // Outline dashed
+  &.btn-outline-dashed {
+    border: 1px dashed $input-border-color;
+  }
+
+  // Flush
+  &.btn-flush {
+    @include button-reset();
+  }
+
+  // Flex
+  &.btn-flex {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  // Align start
+  &.btn-trim-start {
+    justify-content: flex-start !important;
+    padding-left: 0 !important;
+  }
+
+  // Align start
+  &.btn-trim-end {
+    justify-content: flex-end !important;
+    padding-right: 0 !important;
+  }
+}
+
+.btn-sm,
+.btn-group-sm > .btn {
+  --bs-btn-padding-y: 0.25rem;
+  --bs-btn-padding-x: 0.6875rem;
+  --bs-btn-font-size: 0.75rem;
+  --bs-btn-border-radius: 0.25rem;
+}
+.avatar {
+  position: relative;
+  width: 2.375rem;
+  height: 2.375rem;
+  cursor: pointer;
+}
+.avatar img {
+  width: 100%;
+  height: 100%;
+}
+.avatar .avatar-initial {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background-color: #8592a3;
+  font-weight: 500;
+}
+.avatar.avatar-online:after,
+.avatar.avatar-offline:after,
+.avatar.avatar-away:after,
+.avatar.avatar-busy:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 100%;
+  box-shadow: 0 0 0 2px #fff;
+}
+.avatar.avatar-online:after {
+  background-color: #71dd37;
+}
+.avatar.avatar-offline:after {
+  background-color: #8592a3;
+}
+.avatar.avatar-away:after {
+  background-color: #ffab00;
+}
+.avatar.avatar-busy:after {
+  background-color: #ff3e1d;
+}
+
+.btn-outline-primary {
+  color: #fff !important;
+  background-color: #5f61e6 !important;
+  border-color: #5f61e6 !important;
+  box-shadow: 0 0.125rem 0.25rem 0 rgba(105, 108, 255, 0.4) !important;
+  transform: translateY(-1px) !important;
+}
+
+// Reset
+.btn-reset {
+  background-color: transparent;
+  border: 0;
+  box-shadow: none;
+  user-select: none;
+  outline: none;
+}
+
+// Icons
+.btn {
+  // Font icon
+  > i {
+    display: inline-flex;
+    font-size: $font-size-base;
+    padding-right: 0.35rem;
+    vertical-align: middle;
+  }
+
+  // Icon only button
+  &.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    height: $input-height;
+    width: $input-height;
+    line-height: 1;
+
+    i {
+      padding-right: 0;
+    }
+
+    // Remove border
+    &:not(.btn-outline):not(.btn-dashed):not(.border-hover):not(.border-active):not(.btn-flush) {
+      border: 0;
+    }
+
+    // Sizes
+    &.btn-sm {
+      height: $input-height-sm;
+      width: $input-height-sm;
+    }
+
+    &.btn-lg {
+      height: $input-height-lg;
+      width: $input-height-lg;
+    }
+
+    &.btn-circle {
+      border-radius: 50%;
+    }
+  }
+}
