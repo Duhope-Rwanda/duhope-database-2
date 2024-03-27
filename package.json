@@ -1,6 +1,6 @@
 {
-  "name": "powr",
-  "version": "8.2.0",
+  "name": "duhope",
+  "version": "1.1.0",
   "private": true,
   "homepage": "/",
   "dependencies": {
@@ -42,6 +42,7 @@
     "react-bootstrap": "2.5.0-beta.1",
     "react-color": "^2.19.3",
     "react-copy-to-clipboard": "5.1.0",
+    "react-dev-utils": "^12.0.1",
     "react-dom": "18.0.0",
     "react-hot-toast": "^2.4.1",
     "react-inlinesvg": "3.0.0",
@@ -109,7 +110,7 @@
   },
   "resolutions": {
     "webpack": "5.41.1"
-},
+  },
   "browserslist": {
     "production": [
       ">0.2%",
