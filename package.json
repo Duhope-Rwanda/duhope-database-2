@@ -94,7 +94,7 @@
     "webpack-cli": "5.1.4"
   },
   "scripts": {
-    "start": "export PORT=3013 && react-scripts start",
+    "start": "set \"NODE_OPTIONS=--openssl-legacy-provider\" && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
