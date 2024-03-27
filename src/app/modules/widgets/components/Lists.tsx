@@ -8,7 +8,7 @@ import {
     ListsWidget6,
     ListsWidget7,
     ListsWidget8,
-} from '../../../../_powr/partials/widgets'
+} from '../../../../_duhope/partials/widgets'
 
 const Lists: FC = () => {
   return (

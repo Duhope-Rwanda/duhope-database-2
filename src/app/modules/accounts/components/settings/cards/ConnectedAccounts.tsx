@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react'
-import { KTIcon, toAbsoluteUrl } from '../../../../../../_powr/helpers'
+import { KTIcon, toAbsoluteUrl } from '../../../../../../_duhope/helpers'
 import { IConnectedAccounts, connectedAccounts } from '../SettingsModel'
 
 const ConnectedAccounts: React.FC = () => {

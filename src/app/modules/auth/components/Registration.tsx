@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import * as Yup from 'yup';
-import { PasswordMeterComponent } from '../../../../_powr/assets/ts/components';
+import { PasswordMeterComponent } from '../../../../_duhope/assets/ts/components';
 import { auth } from '../../../firebase';
 import { setToken, setUser } from '../../../redux/features/auth/authSlice';
 import { useAuth } from '../core/Auth';

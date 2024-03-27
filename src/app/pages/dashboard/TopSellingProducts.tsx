@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { toAbsoluteUrl } from '../../../_powr/helpers';
+import { toAbsoluteUrl } from '../../../_duhope/helpers';
 
 type Props = {
   className: string;

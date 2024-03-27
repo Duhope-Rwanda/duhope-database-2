@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { Card2 } from '../../../../_powr/partials/content/cards/Card2'
+import { Card2 } from '../../../../_duhope/partials/content/cards/Card2'
 import { IconUserModel } from '../ProfileModels'
 
 export function Projects() {

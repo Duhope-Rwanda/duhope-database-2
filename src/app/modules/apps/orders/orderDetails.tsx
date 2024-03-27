@@ -1,6 +1,6 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
-import { PageTitle } from '../../../../_powr/layout/core'
+import { PageTitle } from '../../../../_duhope/layout/core'
 import { OrderHeader } from './OrderHeader'
 import { Overview } from './components/Overview'
 import { useSelector, useDispatch } from "react-redux";

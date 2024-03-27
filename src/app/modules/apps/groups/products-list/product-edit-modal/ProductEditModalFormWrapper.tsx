@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query'
-import { isNotEmpty, QUERIES } from '../../../../../../_powr/helpers'
+import { isNotEmpty, QUERIES } from '../../../../../../_duhope/helpers'
 import { getUserById } from '../core/_requests'
 import { useListView } from '../core/ListViewProvider'
 import { UserEditModalForm } from './ProductEditModalForm'

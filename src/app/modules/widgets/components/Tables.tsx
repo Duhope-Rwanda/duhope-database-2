@@ -11,7 +11,7 @@ import {
   TablesWidget6,
   TablesWidget8,
   TablesWidget9,
-} from '../../../../_powr/partials/widgets'
+} from '../../../../_duhope/partials/widgets'
 
 const Tables: FC = () => {
   return (

@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
-import { KTIcon } from '../../../../../_powr/helpers'
+import { KTIcon } from '../../../../../_duhope/helpers'
 
 const Step5: FC = () => {
   return (

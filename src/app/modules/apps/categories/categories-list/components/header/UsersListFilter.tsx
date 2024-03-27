@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { MenuComponent } from '../../../../../../../_powr/assets/ts/components'
-import { KTIcon, initialQueryState } from '../../../../../../../_powr/helpers'
+import { MenuComponent } from '../../../../../../../_duhope/assets/ts/components'
+import { KTIcon, initialQueryState } from '../../../../../../../_duhope/helpers'
 import { useQueryRequest } from '../../core/QueryRequestProvider'
 import { useQueryResponse } from '../../core/QueryResponseProvider'
 

@@ -2,7 +2,7 @@
 import { useFormik } from 'formik'
 import React, { useState } from 'react'
 import * as Yup from 'yup'
-import { KTIcon } from '../../../../../../_powr/helpers'
+import { KTIcon } from '../../../../../../_duhope/helpers'
 import { IUpdateEmail, IUpdatePassword, updateEmail, updatePassword } from '../SettingsModel'
 
 const emailFormValidationSchema = Yup.object().shape({

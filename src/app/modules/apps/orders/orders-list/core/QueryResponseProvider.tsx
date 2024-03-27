@@ -9,7 +9,7 @@ import {
     initialQueryResponse,
     initialQueryState,
     stringifyRequestQuery,
-} from '../../../../../../_powr/helpers'
+} from '../../../../../../_duhope/helpers'
 import { useQueryRequest } from './QueryRequestProvider'
 import { Order } from './_models'
 import { getUsers } from './_requests'

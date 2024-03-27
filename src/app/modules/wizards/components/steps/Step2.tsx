@@ -1,6 +1,6 @@
 import { ErrorMessage, Field } from 'formik'
 import { FC } from 'react'
-import { KTIcon } from '../../../../../_powr/helpers'
+import { KTIcon } from '../../../../../_duhope/helpers'
 
 const Step2: FC = () => {
   return (

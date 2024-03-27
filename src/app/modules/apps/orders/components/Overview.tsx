@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { OrderProducts } from './Products';
-import { KTIcon } from '../../../../../_powr/helpers';
+import { KTIcon } from '../../../../../_duhope/helpers';
 import { createOrder } from '../../../../services/shipping.service'
 import { useDispatch } from "react-redux";
 import { toast } from 'react-toastify';

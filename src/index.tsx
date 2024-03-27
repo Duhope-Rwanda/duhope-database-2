@@ -7,19 +7,19 @@ import { Chart, registerables } from 'chart.js'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 // Apps
-import './_powr/assets/fonticon/fonticon.css'
-import './_powr/assets/keenicons/duotone/style.css'
-import './_powr/assets/keenicons/outline/style.css'
-import './_powr/assets/keenicons/solid/style.css'
-import { MetronicI18nProvider } from './_powr/i18n/Metronici18n'
+import './_duhope/assets/fonticon/fonticon.css'
+import './_duhope/assets/keenicons/duotone/style.css'
+import './_duhope/assets/keenicons/outline/style.css'
+import './_duhope/assets/keenicons/solid/style.css'
+import { MetronicI18nProvider } from './_duhope/i18n/Metronici18n'
 /**
  * TIP: Replace this style import with rtl styles to enable rtl mode
  *
- * import './_powr/assets/css/style.rtl.css'
+ * import './_duhope/assets/css/style.rtl.css'
  **/
-import './_powr/assets/sass/plugins.scss'
-import './_powr/assets/sass/style.react.scss'
-import './_powr/assets/sass/style.scss'
+import './_duhope/assets/sass/plugins.scss'
+import './_duhope/assets/sass/style.react.scss'
+import './_duhope/assets/sass/style.scss'
 import { AuthProvider, setupAxios } from './app/modules/auth'
 import { AppRoutes } from './app/routing/AppRoutes'
 /**

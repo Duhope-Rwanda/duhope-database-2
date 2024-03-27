@@ -8,7 +8,7 @@ import {
   groupingOnSelect,
   groupingOnSelectAll,
   initialListView
-} from '../../../../../../_powr/helpers';
+} from '../../../../../../_duhope/helpers';
 import { useQueryResponse, useQueryResponseData } from './QueryResponseProvider';
 
 const ListViewContext = createContext<ListViewContextProps>(initialListView);

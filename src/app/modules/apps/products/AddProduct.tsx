@@ -7,8 +7,8 @@ import React, {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { toAbsoluteUrl } from '../../../../_powr/helpers';
-import { PageTitle } from '../../../../_powr/layout/core';
+import { toAbsoluteUrl } from '../../../../_duhope/helpers';
+import { PageTitle } from '../../../../_duhope/layout/core';
 import { upload_images } from './utils';
 import {
   useAppDispatch,

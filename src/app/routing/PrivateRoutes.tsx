@@ -1,9 +1,9 @@
 import { FC, Suspense, lazy } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import TopBarProgress from 'react-topbar-progress-indicator';
-import { getCSSVariableValue } from '../../_powr/assets/ts/_utils';
-import { WithChildren } from '../../_powr/helpers';
-import { MasterLayout } from '../../_powr/layout/MasterLayout';
+import { getCSSVariableValue } from '../../_duhope/assets/ts/_utils';
+import { WithChildren } from '../../_duhope/helpers';
+import { MasterLayout } from '../../_duhope/layout/MasterLayout';
 import CategoriesPage from '../modules/apps/categories/CategoriesPage';
 import GroupsPage from '../modules/apps/groups/GroupsPage';
 import ProductsGroupPage from '../modules/apps/groups/ProductsGroupPage';

@@ -1,5 +1,5 @@
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
-import { PageLink, PageTitle } from '../../../../_powr/layout/core'
+import { PageLink, PageTitle } from '../../../../_duhope/layout/core'
 import { GroupsListWrapper } from './groups-list/GroupsList'
 
 const usersBreadcrumbs: Array<PageLink> = [

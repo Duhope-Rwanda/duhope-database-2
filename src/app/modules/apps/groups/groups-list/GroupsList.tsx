@@ -1,4 +1,4 @@
-import { KTCard } from '../../../../../_powr/helpers';
+import { KTCard } from '../../../../../_duhope/helpers';
 import { GroupsListHeader } from './components/header/GroupsListHeader';
 import { ListViewProvider, useListView } from './core/ListViewProvider';
 import { QueryRequestProvider } from './core/QueryRequestProvider';

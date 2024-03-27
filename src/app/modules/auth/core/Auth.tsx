@@ -8,8 +8,8 @@ import {
     useRef,
     useState,
 } from 'react'
-import { WithChildren } from '../../../../_powr/helpers'
-import { LayoutSplashScreen } from '../../../../_powr/layout/core'
+import { WithChildren } from '../../../../_duhope/helpers'
+import { LayoutSplashScreen } from '../../../../_duhope/layout/core'
 import * as authHelper from './AuthHelpers'
 import { AuthModel } from './_models'
 import { getUserByToken } from './_requests'

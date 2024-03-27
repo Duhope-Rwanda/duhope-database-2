@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { Link } from 'react-router-dom'
-import { KTIcon } from '../../../../_powr/helpers'
+import { KTIcon } from '../../../../_duhope/helpers'
 import {
   ChartsWidget1,
   ListsWidget5,
   TablesWidget1,
-} from '../../../../_powr/partials/widgets'
+} from '../../../../_duhope/partials/widgets'
 import { useAuth } from '../../auth'
 
 export function Overview() {

@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { useEffect } from 'react'
 import { Link, Outlet } from 'react-router-dom'
-import { toAbsoluteUrl } from '../../../_powr/helpers'
+import { toAbsoluteUrl } from '../../../_duhope/helpers'
 
 const AuthLayout = () => {
   useEffect(() => {
