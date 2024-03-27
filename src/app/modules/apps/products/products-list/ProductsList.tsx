@@ -1,5 +1,5 @@
 import React from 'react';
-import { KTCard } from '../../../../../_powr/helpers';
+import { KTCard } from '../../../../../_duhope/helpers';
 import { ProductsListHeader } from './components/header/ProductsListHeader';
 import { ListViewProvider, useListView } from './core/ListViewProvider';
 import { QueryRequestProvider } from './core/QueryRequestProvider';

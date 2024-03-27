@@ -1,4 +1,4 @@
-import { ID, Response } from '../../../../../../_powr/helpers'
+import { ID, Response } from '../../../../../../_duhope/helpers'
 export type Order = {
   id?: ID
   paymentMethod?: string

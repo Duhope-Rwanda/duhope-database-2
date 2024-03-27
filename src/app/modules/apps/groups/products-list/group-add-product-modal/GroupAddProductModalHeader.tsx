@@ -1,4 +1,4 @@
-import { KTIcon } from '../../../../../../_powr/helpers'
+import { KTIcon } from '../../../../../../_duhope/helpers'
 import { useListView } from '../core/ListViewProvider';
 
 const GroupAddProductModalHeader = () => {

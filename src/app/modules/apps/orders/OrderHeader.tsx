@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { KTIcon } from '../../../../_powr/helpers'
+import { KTIcon } from '../../../../_duhope/helpers'
 import { useDispatch } from "react-redux";
 import { changeOrderStatus } from '../../../redux/features/orders/orderActions'
 import { toast } from 'react-toastify';

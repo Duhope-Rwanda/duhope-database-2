@@ -5,7 +5,7 @@ import {
     FeedsWidget4,
     FeedsWidget5,
     FeedsWidget6,
-} from '../../../../_powr/partials/widgets'
+} from '../../../../_duhope/partials/widgets'
 
 const Feeds: FC = () => {
   return (

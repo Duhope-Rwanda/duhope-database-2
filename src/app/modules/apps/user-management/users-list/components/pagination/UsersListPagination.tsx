@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import clsx from 'clsx'
 import { useMemo } from 'react'
-import { PaginationState } from '../../../../../../../_powr/helpers'
+import { PaginationState } from '../../../../../../../_duhope/helpers'
 import { useQueryRequest } from '../../core/QueryRequestProvider'
 import { useQueryResponseLoading, useQueryResponsePagination } from '../../core/QueryResponseProvider'
 

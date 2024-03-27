@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { KTIcon } from '../../../../_powr/helpers'
-import { Card4 } from '../../../../_powr/partials/content/cards/Card4'
+import { KTIcon } from '../../../../_duhope/helpers'
+import { Card4 } from '../../../../_duhope/partials/content/cards/Card4'
 
 export function Documents() {
   return (

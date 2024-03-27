@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from 'react';
 import { ColumnInstance, Row, useTable } from 'react-table'
-import { KTCardBody } from '../../../../../../_powr/helpers'
+import { KTCardBody } from '../../../../../../_duhope/helpers'
 import { UsersListPagination } from '../components/pagination/UsersListPagination'
 import { Order } from '../core/_models'
 import { CustomHeaderColumn } from './columns/CustomHeaderColumn'

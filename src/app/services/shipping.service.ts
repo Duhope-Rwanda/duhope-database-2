@@ -75,7 +75,7 @@ export const createOrder = async (formData: any) => {
         customerAccount: shippingAccount,
         buyerName: names,
         senderInfo: {
-          name: "powr",
+          name: "duhope",
           phone: "0553397254",
           email: "eddykayiganwa@gmail.com",
           contactType: "ENTERPRISE",

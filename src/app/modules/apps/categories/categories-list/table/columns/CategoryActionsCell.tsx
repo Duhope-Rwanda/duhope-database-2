@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { FC, useEffect } from 'react'
 import { useMutation, useQueryClient } from 'react-query'
-import { MenuComponent } from '../../../../../../../_powr/assets/ts/components'
-import { ID, KTIcon, QUERIES } from '../../../../../../../_powr/helpers'
+import { MenuComponent } from '../../../../../../../_duhope/assets/ts/components'
+import { ID, KTIcon, QUERIES } from '../../../../../../../_duhope/helpers'
 import { useListView } from '../../core/ListViewProvider'
 import { useQueryResponse } from '../../core/QueryResponseProvider'
 import { deleteUser } from '../../core/_requests'

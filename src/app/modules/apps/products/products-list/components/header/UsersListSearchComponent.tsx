@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState } from 'react'
-import { KTIcon } from '../../../../../../../_powr/helpers'
+import { KTIcon } from '../../../../../../../_duhope/helpers'
 
 const UsersListSearchComponent = ({ handleSearch }) => {
   const [searchTerm, setSearchTerm] = useState('');

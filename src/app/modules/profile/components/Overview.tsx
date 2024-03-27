@@ -7,7 +7,7 @@ import {
     FeedsWidget6,
     ListsWidget2,
     ListsWidget5,
-} from '../../../../_powr/partials/widgets'
+} from '../../../../_duhope/partials/widgets'
 
 export function Overview() {
   return (

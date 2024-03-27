@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { ErrorMessage, Field } from 'formik'
 import { FC } from 'react'
-import { KTIcon } from '../../../../../_powr/helpers'
+import { KTIcon } from '../../../../../_duhope/helpers'
 
 const Step1: FC = () => {
   return (

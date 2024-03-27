@@ -1,5 +1,5 @@
 {
-  "name": "powr",
+  "name": "duhope",
   "version": "8.2.0",
   "private": true,
   "homepage": "/",
@@ -93,7 +93,7 @@
     "webpack-cli": "5.1.4"
   },
   "scripts": {
-    "start": "set \"NODE_OPTIONS=--openssl-legacy-provider\" && react-scripts start",
+    "start": "set PORT=3013 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -107,6 +107,9 @@
       "react-app/jest"
     ]
   },
+  "resolutions": {
+    "webpack": "5.41.1"
+},
   "browserslist": {
     "production": [
       ">0.2%",

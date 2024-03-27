@@ -1,14 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { FC, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
-import { PageTitle } from "../../../_powr/layout/core";
+import { PageTitle } from "../../../_duhope/layout/core";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrders } from "../../redux/features/orders/orderActions";
 import { fetchUsers } from "../../redux/features/actions/users";
-import chartsuccess from "../../../_powr/assets/unicons/chart-success.png";
-import WalletInfo from "../../../_powr/assets/unicons/wallet-info.png";
-import PayPalIcon from "../../../_powr/assets/unicons/paypal.png";
-import primaryIcon from "../../../_powr/assets/unicons/cc-primary.png";
+import chartsuccess from "../../../_duhope/assets/unicons/chart-success.png";
+import WalletInfo from "../../../_duhope/assets/unicons/wallet-info.png";
+import PayPalIcon from "../../../_duhope/assets/unicons/paypal.png";
+import primaryIcon from "../../../_duhope/assets/unicons/cc-primary.png";
 import { fetch_products } from "../../redux/products/actions";
 import { useAppSelector } from "../../redux/hooks";
 import { ProcessingLoader } from "../../components/loaders/processingLoader";
@@ -20,7 +20,7 @@ import TopSellingCategories from "./TopSellingCategories";
 import {
   TablesWidget5,
   TablesWidget7
-} from "../../../_powr/partials/widgets";
+} from "../../../_duhope/partials/widgets";
 
 const DashboardPage: FC = () => {
   const styles = {

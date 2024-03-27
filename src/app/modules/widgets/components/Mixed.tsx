@@ -11,7 +11,7 @@ import {
     MixedWidget7,
     MixedWidget8,
     MixedWidget9,
-} from '../../../../_powr/partials/widgets'
+} from '../../../../_duhope/partials/widgets'
 
 const Mixed: FC = () => {
   return (

@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { FC, PropsWithChildren, useMemo } from 'react';
 import { HeaderProps } from 'react-table';
-import { initialQueryState } from '../../../../../../../_powr/helpers';
+import { initialQueryState } from '../../../../../../../_duhope/helpers';
 import { useQueryRequest } from '../../core/QueryRequestProvider';
 import { User } from '../../core/_models';
 

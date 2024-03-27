@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { ColumnInstance, Row, useTable } from 'react-table';
-import { KTCardBody } from '../../../../../../_powr/helpers';
+import { KTCardBody } from '../../../../../../_duhope/helpers';
 import { UsersListPagination } from '../components/pagination/UsersListPagination';
 import { CustomHeaderColumn } from './columns/CustomHeaderColumn';
 import { CustomRow } from './columns/CustomRow';

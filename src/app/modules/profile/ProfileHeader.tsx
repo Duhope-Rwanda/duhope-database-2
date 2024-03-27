@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { KTIcon, toAbsoluteUrl } from '../../../_powr/helpers'
-import { Dropdown1 } from '../../../_powr/partials'
+import { KTIcon, toAbsoluteUrl } from '../../../_duhope/helpers'
+import { Dropdown1 } from '../../../_duhope/partials'
 import { useAuth } from '../auth'
 
 const ProfileHeader: React.FC = () => {

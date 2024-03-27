@@ -1,4 +1,4 @@
-import { PageLink } from '../../../_powr/layout/core'
+import { PageLink } from '../../../_duhope/layout/core'
 
 export const profileSubmenu: Array<PageLink> = [
   {

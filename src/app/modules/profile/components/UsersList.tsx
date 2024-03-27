@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { toAbsoluteUrl } from '../../../../_powr/helpers'
+import { toAbsoluteUrl } from '../../../../_duhope/helpers'
 import { IconUserModel } from '../ProfileModels'
 
 type Props = {

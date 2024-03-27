@@ -1,4 +1,4 @@
-import { KTCard } from '../../../../../_powr/helpers'
+import { KTCard } from '../../../../../_duhope/helpers'
 import { ListViewProvider } from './core/ListViewProvider'
 import { QueryRequestProvider } from './core/QueryRequestProvider'
 import { QueryResponseProvider } from './core/QueryResponseProvider'

@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { FC, useEffect } from 'react'
-import { MenuComponent } from '../../../../../../../_powr/assets/ts/components'
-import { ID } from '../../../../../../../_powr/helpers'
+import { MenuComponent } from '../../../../../../../_duhope/assets/ts/components'
+import { ID } from '../../../../../../../_duhope/helpers'
 import { useListView } from '../../core/ListViewProvider'
 
 type Props = {

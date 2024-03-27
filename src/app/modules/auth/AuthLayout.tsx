@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { useEffect } from 'react'
 import { Link, Outlet } from 'react-router-dom'
-import { toAbsoluteUrl } from '../../../_powr/helpers'
+import { toAbsoluteUrl } from '../../../_duhope/helpers'
 
 const AuthLayout = () => {
   useEffect(() => {
@@ -61,7 +61,7 @@ const AuthLayout = () => {
         <div className='d-flex flex-column flex-center py-15 px-5 px-md-15 w-100'>
           {/* begin::Logo */}
           <Link to='/' className='mb-12'>
-            <img alt='Logo' src={toAbsoluteUrl('/media/logos/default.svg')} className='h-75px' />
+            <img alt='Logo' src={toAbsoluteUrl('/media/logos/DuHope_preview.svg')} className='h-100px ' />
           </Link>
           {/* end::Logo */}
 

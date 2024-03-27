@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import clsx from 'clsx'
 import { FC } from 'react'
-import { toAbsoluteUrl } from '../../../../../../../_powr/helpers'
+import { toAbsoluteUrl } from '../../../../../../../_duhope/helpers'
 import { User } from '../../core/_models'
 
 type Props = {

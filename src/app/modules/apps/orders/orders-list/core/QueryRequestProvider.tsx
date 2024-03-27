@@ -4,7 +4,7 @@ import {
     QueryState,
     WithChildren,
     initialQueryRequest,
-} from '../../../../../../_powr/helpers'
+} from '../../../../../../_duhope/helpers'
 
 const QueryRequestContext = createContext<QueryRequestContextProps>(initialQueryRequest)
 

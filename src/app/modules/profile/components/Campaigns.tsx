@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { Card5 } from '../../../../_powr/partials/content/cards/Card5'
+import { Card5 } from '../../../../_duhope/partials/content/cards/Card5'
 
 export function Campaigns() {
   return (

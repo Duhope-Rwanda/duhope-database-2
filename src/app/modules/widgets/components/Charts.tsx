@@ -8,7 +8,7 @@ import {
     ChartsWidget6,
     ChartsWidget7,
     ChartsWidget8,
-} from '../../../../_powr/partials/widgets'
+} from '../../../../_duhope/partials/widgets'
 
 const Charts: FC = () => {
   return (

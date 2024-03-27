@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import clsx from 'clsx'
 import React, { useState } from 'react'
-import { KTIcon, toAbsoluteUrl } from '../../../_powr/helpers'
-import { ILayout, LayoutSetup, getLayoutFromLocalStorage } from '../../../_powr/layout/core'
+import { KTIcon, toAbsoluteUrl } from '../../../_duhope/helpers'
+import { ILayout, LayoutSetup, getLayoutFromLocalStorage } from '../../../_duhope/layout/core'
 
 const BuilderPage: React.FC = () => {
   const [tab, setTab] = useState('Sidebar')
@@ -54,7 +54,7 @@ const BuilderPage: React.FC = () => {
             </p>
             <p className='list-unstyled text-gray-600 fw-bold fs-6 p-0 m-0'>
               Also, you can configurate the Layout in the code (
-              <code>src/_powr/layout/core/_LayoutConfig.ts</code> file). Don't forget clear your
+              <code>src/_duhope/layout/core/_LayoutConfig.ts</code> file). Don't forget clear your
               local storage when you are changing _LayoutConfig.
             </p>
           </div>

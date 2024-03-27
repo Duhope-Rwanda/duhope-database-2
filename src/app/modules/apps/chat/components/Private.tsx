@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { FC } from 'react'
-import { KTIcon, toAbsoluteUrl } from '../../../../../_powr/helpers'
-import { ChatInner, Dropdown1 } from '../../../../../_powr/partials'
+import { KTIcon, toAbsoluteUrl } from '../../../../../_duhope/helpers'
+import { ChatInner, Dropdown1 } from '../../../../../_duhope/partials'
 
 const Private: FC = () => {
   return (

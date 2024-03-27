@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios'
-import { ID, Response } from '../../../../../../_powr/helpers'
+import { ID, Response } from '../../../../../../_duhope/helpers'
 import { Product, UsersQueryResponse } from './_models'
 
 const API_URL = process.env.REACT_APP_THEME_API_URL
