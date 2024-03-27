@@ -54,7 +54,7 @@ const AuthLayout = () => {
         <div className='d-flex flex-column flex-center py-15 px-5 px-md-15 w-100'>
           {/* begin::Logo */}
           <Link to='/' className='mb-12'>
-            <img alt='Logo' src={toAbsoluteUrl('/media/logos/DuHope_preview.svg')} className='h-100px ' />
+            <img alt='Logo' src={toAbsoluteUrl('/media/logos/DuHope_preview.svg')} className='h-50px ' />
           </Link>
           {/* end::Logo */}
 
@@ -67,7 +67,7 @@ const AuthLayout = () => {
           {/* end::Image */}
 
           {/* begin::Title */}
-          <h1 className='text-white fs-25 fw-bolder text-center mb-7'>
+          <h1 className='text-white fs-20 fw-bolder text-center '>
           &#x275D; women shouldn’t have to sell their bodies to feed their families &#x275E;	  	
           </h1>
           {/* end::Title */}
