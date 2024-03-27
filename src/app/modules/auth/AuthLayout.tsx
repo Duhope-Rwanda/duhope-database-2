@@ -74,7 +74,7 @@ const AuthLayout = () => {
 
           {/* begin::Text */}
           <div className='text-white fs-base text-center'>
-             DuHope | Developed by Vainqueur
+          {new Date().getFullYear().toString()}&copy;  DuHope | Developed by Vainqueur
           </div>
           {/* end::Text */}
         </div>
