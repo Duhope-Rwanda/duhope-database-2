@@ -54,7 +54,7 @@ const AuthLayout = () => {
         <div className='d-flex flex-column flex-center py-15 px-5 px-md-15 w-100'>
           {/* begin::Logo */}
           <Link to='/' className='mb-12'>
-            <img alt='Logo' src={toAbsoluteUrl('/media/logos/DuHope_preview.svg')} className='h-50px ' />
+            <img alt='Logo' src={toAbsoluteUrl('/media/logos/DuHope_preview.svg')} className='h-50px' />
           </Link>
           {/* end::Logo */}
 
@@ -74,7 +74,7 @@ const AuthLayout = () => {
 
           {/* begin::Text */}
           <div className='text-white fs-base text-center'>
-          {new Date().getFullYear().toString()}&copy;  DuHope | Developed by Vainqueur
+          {new Date().getFullYear().toString()}&copy; |  DuHope 
           </div>
           {/* end::Text */}
         </div>
