@@ -34,16 +34,8 @@ const AuthLayout = () => {
         <div className='d-flex flex-center flex-wrap px-5'>
           {/* begin::Links */}
           <div className='d-flex fw-semibold text-primary fs-base'>
-            <a href='#' className='px-5' target='_blank'>
-              Terms
-            </a>
-
-            <a href='#' className='px-5' target='_blank'>
-              Plans
-            </a>
-
-            <a href='#' className='px-5' target='_blank'>
-              Contact Us
+            <a href='https://duhope.org/' rel='noopener' className='px-5' target='_blank'>
+              Find Us
             </a>
           </div>
           {/* end::Links */}
@@ -56,33 +48,33 @@ const AuthLayout = () => {
       <div
         className='d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-1 order-lg-2'
         style={{backgroundImage: `url(${toAbsoluteUrl('/media/misc/auth-bg.png')})`}}
+        // style={{backgroundColor: "#27cfc8" }}
       >
         {/* begin::Content */}
         <div className='d-flex flex-column flex-center py-15 px-5 px-md-15 w-100'>
           {/* begin::Logo */}
           <Link to='/' className='mb-12'>
-            <img alt='Logo' src={toAbsoluteUrl('/media/logos/DuHope_preview.svg')} className='h-100px ' />
+            <img alt='Logo' src={toAbsoluteUrl('/media/logos/DuHope_preview.svg')} className='h-50px' />
           </Link>
           {/* end::Logo */}
 
           {/* begin::Image */}
           <img
             className='mx-auto w-275px w-md-50 w-xl-500px mb-10 mb-lg-20'
-            src={toAbsoluteUrl('/media/misc/auth-screens.png')}
+            src={toAbsoluteUrl('/media/misc/Deskto.png')}
             alt=''
           />
           {/* end::Image */}
 
           {/* begin::Title */}
-          <h1 className='text-white fs-2qx fw-bolder text-center mb-7'>
-            Fast, Efficient and Productive
+          <h1 className='text-white fs-20 fw-bolder text-center '>
+          &#x275D; women shouldn’t have to sell their bodies to feed their families &#x275E;	  	
           </h1>
           {/* end::Title */}
 
           {/* begin::Text */}
           <div className='text-white fs-base text-center'>
-          POWER eSports Team From 2010 Forever | Winners of more than 160 championships and best organization awards | On a journey with our audience to create a field that supports talent. Digital Fist Sports Club Company,{' '}
-    
+          {new Date().getFullYear().toString()}&copy; |  DuHope 
           </div>
           {/* end::Text */}
         </div>
