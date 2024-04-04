@@ -50,6 +50,12 @@ const SidebarMenuMain = () => {
         title="Products"
         fontIcon="bi-layers"
       />
+      <SidebarMenuItem
+        to="/apps/women"
+        icon="abstract-28"
+        title="Women"
+        fontIcon="bi-layers"
+      />
     </>
   );
 };
