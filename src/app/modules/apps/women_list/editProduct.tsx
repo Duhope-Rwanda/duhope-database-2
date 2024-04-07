@@ -1,125 +1,104 @@
 import clsx from 'clsx';
 import { useFormik } from 'formik';
-import React, {
-  useEffect,
-  useState
-} from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import { toAbsoluteUrl } from '../../../../_duhope/helpers';
 import { PageTitle } from '../../../../_duhope/layout/core';
-import { upload_images } from './utils';
-import {
-  useAppDispatch,
-  useAppSelector
-} from '../../../redux/hooks';
-import {
-  add_product,
-  fetch_products
-} from '../../../redux/products/actions';
-import { fetchCategories } from '../../../redux/features/categories/categoriesActions';
-import "bootstrap-select/dist/css/bootstrap-select.min.css";
-import "bootstrap-select/dist/js/bootstrap-select.min";
+import { delete_images, upload_images } from './utils';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { TProduct } from '../../../redux/products/types';
+import { edit_product, fetch_products, get_product_by_id } from '../../../redux/products/actions';
+import { fetchCategories } from '../../../redux/features/categories/categoriesActions'
+import { product_schema } from './AddProduct';
+import Select from "react-select";
 import { ProcessingLoader } from '../../../components/loaders/processingLoader'
 
-export const product_schema = Yup.object().shape({
-  name: Yup.string().required('Name is required'),
-  description: Yup.string().required(
-    'Description is required'
-  ),
-  price: Yup.number().required(
-    'Price is required'
-  ),
-  stock: Yup.number().required(
-    'Stock is required'
-  ),
-  category_id: Yup.string().required(
-    'Category is required'
-  ),
-  discount_type: Yup.string().required(
-    'Discount Type is required'
-  ),
-  discount_number: Yup.number(),
-  discount_percentage: Yup.number(),
-  images: Yup.array()
-    .of(Yup.string().url())
-    .required('Images are required'),
-  main_image_url: Yup.string().url(),
-  featured: Yup.boolean().required(
-    'Featured is required'
-  ),
-  points: Yup.number(),
-  ratings: Yup.number(),
-  // sizes for clothes
-  size_XS: Yup.number(),
-  size_S: Yup.number(),
-  size_M: Yup.number(),
-  size_L: Yup.number(),
-  size_XL: Yup.number(),
-  size_XXL: Yup.number(),
-  // sizes for shoes based on the shoes_sizes_count
-  shoe_sizes: Yup.array().of(
-    Yup.object().shape({
-      name: Yup.string().required(
-        'Name is required'
-      ),
-      quantity: Yup.number().required(
-        'Quantity is required'
-      )
-    })
-  ),
-  patternOrColor: Yup.object()
-});
+type ProductForm = Yup.InferType<typeof product_schema>;
 
-type ProductForm = Yup.InferType<
-  typeof product_schema
->;
-
-const initial_values: ProductForm = {
-  name: '',
-  description: '',
-  category_id: '',
-  price: 0,
-  stock: 0,
-  discount_type: 'percentage',
-  discount_number: 0,
-  discount_percentage: 0,
-  images: [],
-  main_image_url: '',
-  featured: false,
-  points: 0,
-  ratings: 0,
-  // sizes
-  size_XS: 0,
-  size_S: 0,
-  size_M: 0,
-  size_L: 0,
-  size_XL: 0,
-  size_XXL: 0,
-  patternOrColor: {}
-};
-
-const AddProduct = () => {
+const EditProduct = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { productId } = useParams();
   const {
     categories,
     loadingCategories,
     response
   } = useAppSelector((state) => state.categories);
-  const [images, setImages] = useState<File[]>(
-    []
-  );
-  const [show_sizes, set_show_sizes] =
-    useState(false);
-  const [product_type, set_product_type] =
-    useState<'clothes' | 'shoes'>();
   const [
     shoes_sizes_count,
     set_shoes_sizes_count
   ] = useState(0);
+  const [images, set_images] = useState<File[]>([]);
+  const [image_urls, set_image_urls] = useState<string[]>([]);
+  const [show_sizes, set_show_sizes] = useState(false);
   const [showColor, setShowColor] = useState(false)
   const [selectedOption, setSelectedOption] = useState<any>(null);
+  const [productToEdit, setProductToEdit] = useState<any>(null)
+  const [product_type, set_product_type] =
+    useState<'clothes' | 'shoes'>();
+
+  useEffect(() => {
+    if (!productToEdit) {
+      return
+    }
+    if (productToEdit?.images?.length > 0) {
+      set_image_urls(productToEdit.images);
+    }
+    if (productToEdit?.sizes?.length > 0 && !show_sizes) {
+      set_show_sizes(true);
+    }
+    if (Object.keys(productToEdit?.patternOrColor).length > 0) {
+      setSelectedOption(productToEdit?.patternOrColor)
+    }
+  }, [productToEdit, image_urls, show_sizes, selectedOption]);
+
+  useEffect(() => {
+    const getProduct = async () => {
+      const res = await dispatch(get_product_by_id(productId));
+      if (!res) {
+        return null; // Return null or handle the error accordingly
+      }
+      return res.payload;
+    };
+
+    const fetchProduct = async () => {
+      const product: any = await getProduct();
+
+      if (!product) {
+        return null
+      }
+      setProductToEdit(product);
+      dispatch(fetchCategories());
+    };
+
+    fetchProduct();
+  }, [dispatch, productId]);
+
+  const initial_values: ProductForm = {
+    name: productToEdit?.name ?? '',
+    description: productToEdit?.description ?? '',
+    category_id: productToEdit?.category_id ?? '',
+    price: productToEdit?.price ?? 0,
+    stock: productToEdit?.stock ?? 0,
+    discount_type: productToEdit?.discount_type ?? 'percentage',
+    discount_number: productToEdit?.discount_price ?? 0,
+    discount_percentage: productToEdit?.discount_percentage ?? 0,
+    images: [],
+    main_image_url: productToEdit?.main_image_url ?? '',
+    featured: productToEdit?.featured ?? false,
+    points: productToEdit?.points ?? 0,
+    ratings: productToEdit?.ratings ?? 0,
+    // sizes
+    size_XS: productToEdit?.sizes?.find((size) => size.name === 'XS')?.quantity ?? 0,
+    size_S: productToEdit?.sizes?.find((size) => size.name === 'S')?.quantity ?? 0,
+    size_M: productToEdit?.sizes?.find((size) => size.name === 'M')?.quantity ?? 0,
+    size_L: productToEdit?.sizes?.find((size) => size.name === 'L')?.quantity ?? 0,
+    size_XL: productToEdit?.sizes?.find((size) => size.name === 'XL')?.quantity ?? 0,
+    size_XXL: productToEdit?.sizes?.find((size) => size.name === 'XXL')?.quantity ?? 0,
+    patternOrColor: productToEdit?.patternOrColor ?? {},
+  };
+
 
   const CustomOption = ({ innerProps, label, data }) => (
     <div {...innerProps} className='cursor-pointer mb-3 p-2 border-top'>
@@ -131,23 +110,30 @@ const AddProduct = () => {
       </span>
     </div>
   );
-
   const formik = useFormik({
     initialValues: initial_values,
+    enableReinitialize: true,
     validationSchema: product_schema,
-    onSubmit: async (
-      values,
-      { setSubmitting, resetForm }
-    ) => {
+    onSubmit: async (values, { setSubmitting, resetForm }) => {
       setSubmitting(true);
       try {
-        const uploaded_images_urls =
-          await upload_images({
-            files: images,
-            folder_name: 'products'
-          });
+        const old_images = productToEdit?.images ?? [];
+        let images_to_upload = [...old_images];
+        // check if they added new images
+        if (images.length > 0) {
+          const new_images = await upload_images({ files: images, folder_name: 'products' });
+          // add those images to the images to upload
+          if (new_images) images_to_upload = [...images_to_upload, ...new_images];
+        }
+        // check if they removed some images, comparing against the image_urls state
+        const images_to_delete = old_images.filter((image) => !image_urls.includes(image));
+        if (images_to_delete.length > 0) {
+          // remove those images from the images to upload
 
-        // get stock total based in individual sizes in case show_sizes is true, if not then get the stock from the stock input
+          images_to_upload = images_to_upload.filter((image) => !images_to_delete.includes(image));
+          // delete those images from the bucket
+          await delete_images(images_to_delete);
+        }
         const stock_total = show_sizes
           ? product_type === 'clothes' &&
             values.size_XS &&
@@ -181,18 +167,18 @@ const AddProduct = () => {
               0
             )
           : values.stock;
-        const new_product: any = {
+
+        const updated_product: any = {
+          id: productId,
           name: values.name,
-          main_image_url: uploaded_images_urls?.[0] ?? '',
+          main_image_url: images_to_upload[0],
           category_id: values.category_id,
-          images: uploaded_images_urls ?? [],
+          images: images_to_upload,
           price: values.price ? values.price : 0,
-          patternOrColor: selectedOption ? selectedOption : {},
           discount_percentage: values.discount_percentage ?? 0,
           discount_price: values.discount_number ?? 0,
           ratings: 0,
           stock: stock_total,
-          // depending on the product type, the sizes will be different
           sizes: show_sizes
             ? product_type === 'clothes'
               ? [
@@ -243,7 +229,7 @@ const AddProduct = () => {
           featured: false,
           discount_type: values.discount_type ?? 'percentage',
         };
-        dispatch(add_product(new_product));
+        dispatch(edit_product(updated_product));
         dispatch(fetch_products());
         navigate('/apps/products');
       } catch (e) {
@@ -258,32 +244,26 @@ const AddProduct = () => {
     }
   });
 
-  const handle_image_change = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handle_image_change = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      const new_images = Array.from(
-        event.target.files
-      );
-      setImages([...images, ...new_images]);
+      const new_images = Array.from(event.target.files);
+      set_images([...images, ...new_images]);
     }
   };
 
-  const handle_remove_image = (
-    removeIdx: number
-  ) => {
-    const new_images = images.filter(
-      (_, index) => index !== removeIdx
-    );
-    setImages(new_images);
+  const handle_remove_image = (remove_index: number) => {
+    const new_images = images.filter((_, index) => index !== remove_index);
+    set_images(new_images);
   };
 
-  useEffect(() => {
-    dispatch(fetchCategories());
-  }, [dispatch]);
+  const handle_remove_image_from_urls = (remove_index: number) => {
+    const new_image_urls = image_urls.filter((_, index) => index !== remove_index);
+    set_image_urls(new_image_urls);
+  };
+
   return (
     <>
-      <PageTitle>Add Product</PageTitle>
+      <PageTitle>Edit Product</PageTitle>
 
       <div className=" card mb-5 mb-xl-10 p-10 ">
         <section className="panel panel-default">
@@ -306,48 +286,105 @@ const AddProduct = () => {
                 data-kt-scroll-offset="300px"
               >
                 {/* begin::Label */}
-                <label className="required fw-bold fs-6 mb-2">
-                  Images
-                </label>
+                <label className="required fw-bold fs-6 mb-2">Images</label>
                 {/* end::Label */}
                 <div className="d-flex">
-                  {images.length === 0 && (
-                    <div className="fv-row  justify-content-center mb-7">
-                      {/* select images */}
+                  {image_urls &&
+                    image_urls.map((image, index) => (
+                      <div key={image} className="fv-row  justify-content-center mb-7 me-3 ">
+                        <div
+                          className={
+                            `image-input image-input-outline` +
+                            (index === 0 ? ' border border-3 border-danger' : '')
+                          }
+                          data-kt-image-input="true"
+                          id="kt_image_1"
+                          style={{
+                            backgroundImage: `url('${image}')`
+                          }}
+                        >
+                          {/* begin::Preview existing avatar */}
+                          <div
+                            className="image-input-wrapper w-125px h-125px"
+                            style={{
+                              backgroundImage: `url('${image}')`
+                            }}
+                            onMouseOver={
+                              // add border
+                              (e) => {
+                                e.currentTarget.classList.add('border');
+                                e.currentTarget.classList.add('border-3');
+                                e.currentTarget.classList.add('border-danger');
+                              }
+                            }
+                            onMouseOut={
+                              // remove border
+                              (e) => {
+                                e.currentTarget.classList.remove('border');
+                                e.currentTarget.classList.remove('border-3');
+                                e.currentTarget.classList.remove('border-danger');
+                              }
+                            }
+                            onClick={() => {
+                              // set as main image
+                              const new_image_urls = [...image_urls];
+                              new_image_urls.splice(index, 1);
+                              new_image_urls.unshift(image);
+                              set_image_urls(new_image_urls);
+                            }}
+                          ></div>
+                          {/* end::Preview existing avatar */}
 
-                      <input
-                        type="file"
-                        name="avatar"
-                        multiple
-                        onChange={
-                          handle_image_change
-                        }
-                        accept=".png, .jpg, .jpeg"
-                      />
-                    </div>
-                  )}
+                          {/* begin::Label */}
+                          <label
+                            className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                            data-kt-image-input-action="change"
+                            data-bs-toggle="tooltip"
+                            title="Change avatar"
+                            onClick={() => handle_remove_image_from_urls(index)}
+                          >
+                            <i className="bi bi-x fs-7"></i>
+                          </label>
+                        </div>
+                      </div>
+                    ))}
+
                   {images.map((image, index) => (
-                    <div
-                      key={index}
-                      className="fv-row  justify-content-center mb-7 me-3 "
-                    >
+                    <div key={index} className="fv-row  justify-content-center mb-7 me-3 ">
                       <div
-                        className="image-input image-input-outline p"
+                        className={
+                          `image-input image-input-outline` +
+                          (index === 0 ? ' border border-3 border-danger' : '')
+                        }
                         data-kt-image-input="true"
+                        id="kt_image_1"
                         style={{
-                          backgroundImage: `url('${URL.createObjectURL(
-                            image
-                          )}')`
+                          backgroundImage: `url('${URL.createObjectURL(image)}')`
                         }}
                       >
                         {/* begin::Preview existing avatar */}
                         <div
                           className="image-input-wrapper w-125px h-125px"
                           style={{
-                            backgroundImage: `url('${URL.createObjectURL(
-                              image
-                            )}')`
+                            backgroundImage: `url('${URL.createObjectURL(image)}')`
                           }}
+                          onMouseOver={
+                            // add border
+                            (e) => {
+                              e.currentTarget.classList.add('border');
+                              e.currentTarget.classList.add('border-3');
+                              e.currentTarget.classList.add('border-danger');
+                            }
+                          }
+                          onMouseOut={
+                            // remove border
+                            (e) => {
+                              e.currentTarget.classList.remove('border');
+                              e.currentTarget.classList.remove('border-3');
+                              e.currentTarget.classList.remove('border-danger');
+                            }
+                          }
+                          onClick={() => handle_remove_image(index)}
                         ></div>
                         {/* end::Preview existing avatar */}
 
@@ -357,11 +394,7 @@ const AddProduct = () => {
                           data-kt-image-input-action="change"
                           data-bs-toggle="tooltip"
                           title="Change avatar"
-                          onClick={() =>
-                            handle_remove_image(
-                              index
-                            )
-                          }
+                          onClick={() => handle_remove_image(index)}
                         >
                           <i className="bi bi-x fs-7"></i>
                         </label>
@@ -369,192 +402,127 @@ const AddProduct = () => {
                     </div>
                   ))}
                 </div>
-
-                {images.length > 0 && (
-                  <div className="fv-row  justify-content-center mb-7 me-3 ">
+                <div className="fv-row  justify-content-center mb-7 me-3 ">
+                  <div
+                    className={`image-input image-input-outline`}
+                    data-kt-image-input="true"
+                    id="kt_image_1"
+                  >
+                    {/* begin::Preview existing avatar */}
                     <div
-                      className={`image-input image-input-outline`}
-                      data-kt-image-input="true"
-                      id="kt_image_1"
-                    >
-                      {/* begin::Preview existing avatar */}
-                      <div
-                        className="image-input-wrapper w-50px h-50px"
-                        style={{
-                          backgroundImage: `url('${toAbsoluteUrl(
-                            '/media/image.png'
-                          )}')`
-                        }}
-                      ></div>
-                      {/* end::Preview existing avatar */}
+                      className="image-input-wrapper w-50px h-50px"
+                      style={{
+                        backgroundImage: `url('${toAbsoluteUrl('/media/image.png')}')`
+                      }}
+                    ></div>
+                    {/* end::Preview existing avatar */}
 
-                      {/* begin::Label */}
-                      <label
-                        className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                        data-kt-image-input-action="change"
-                        data-bs-toggle="tooltip"
-                        title="Change avatar"
-                      >
-                        <i className="bi bi-plus fs-7"></i>
-                        {/* begin::Inputs */}
-                        <input
-                          type="file"
-                          accept=".png, .jpg, .jpeg"
-                          {...formik.getFieldProps(
-                            'images'
-                          )}
-                          name="images"
-                          multiple
-                          onChange={
-                            handle_image_change
-                          }
-                        />
-                        <input
-                          type="hidden"
-                          name="profile_avatar_remove"
-                        />
-                        {/* end::Inputs */}
-                      </label>
-                      {/* end::Label */}
-                    </div>
+                    {/* begin::Label */}
+                    <label
+                      className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                      data-kt-image-input-action="change"
+                      data-bs-toggle="tooltip"
+                      title="Change avatar"
+                    >
+                      <i className="bi bi-plus fs-7"></i>
+                      {/* begin::Inputs */}
+                      <input
+                        type="file"
+                        accept=".png, .jpg, .jpeg"
+                        {...formik.getFieldProps('images')}
+                        name="images"
+                        onChange={handle_image_change}
+                      />
+                      {/* end::Inputs */}
+                    </label>
+                    {/* end::Label */}
                   </div>
-                )}
+                </div>
 
                 <div className="d-flex flex-sm-row flex-column  gap-1 ">
                   {/* begin::Input group */}
                   <div className="col-md-12 mb-7">
                     {/* begin::Label */}
-                    <label className="required fw-bold fs-6 mb-2">
-                      Name
-                    </label>
+                    <label className="required fw-bold fs-6 mb-2">Name</label>
                     {/* end::Label */}
 
                     {/* begin::Input */}
                     <input
-                      placeholder="name"
-                      {...formik.getFieldProps(
-                        'name'
-                      )}
+                      {...formik.getFieldProps('name')}
                       type="text"
                       name="name"
                       className={clsx(
                         'form-control form-control-solid mb-3 mb-lg-0',
+                        { 'is-invalid': formik.touched && formik.errors.name },
                         {
-                          'is-invalid':
-                            formik.touched &&
-                            formik.errors.name
-                        },
-                        {
-                          'is-valid':
-                            formik.touched.name &&
-                            !formik.errors.name
+                          'is-valid': formik.touched.name && !formik.errors.name
                         }
                       )}
                       autoComplete="off"
-                      disabled={
-                        formik.isSubmitting ||
-                        loadingCategories
-                      }
+                      disabled={formik.isSubmitting || loadingCategories}
                     />
 
                     {/* end::Input */}
                   </div>
                 </div>
               </div>
-
               {/* end::Scroll */}
               <div className="d-flex flex-sm-row flex-column mb-7 gap-1">
                 <div className="col-md-6 mr-3">
-                  <label className="fw-bold fs-6 mb-2">
-                    Discount Type:
-                  </label>
+                  <label className="fw-bold fs-6 mb-2">Discount Type:</label>
                   <select
                     className="form-select form-select-solid"
-                    {...formik.getFieldProps(
-                      'discount_type'
-                    )}
+                    {...formik.getFieldProps('discount_type')}
+                    name="discount_type"
+                    id="discount_type"
+                    disabled={formik.isSubmitting || loadingCategories}
                   >
-                    <option value="percentage">
-                      Percentage
-                    </option>
-                    <option value="price">
-                      Price
-                    </option>
+                    <option value="percentage">Percentage</option>
+                    <option value="price">Price</option>
                   </select>
                 </div>
 
                 <div className="col-md-6">
-                  {formik.values.discount_type ===
-                    'percentage' ? (
+                  {formik.values.discount_type === 'percentage' ? (
                     <>
-                      <label className="fw-bold fs-6 mb-2">
-                        Discount Percentage:
-                      </label>
+                      <label className="fw-bold fs-6 mb-2">Discount Percentage:</label>
                       <input
-                        type="text"
-                        {...formik.getFieldProps(
-                          'discount'
-                        )}
+                        type="number"
+                        {...formik.getFieldProps('discount')}
                         className={clsx(
                           'form-control form-control-solid mb-3 mb-lg-0',
+                          { 'is-invalid': formik.touched && formik.errors.discount_percentage },
                           {
-                            'is-invalid':
-                              formik.touched &&
-                              formik.errors
-                                .discount_percentage
-                          },
-                          {
-                            'is-valid':
-                              formik.touched
-                                .name &&
-                              !formik.errors
-                                .discount_percentage
+                            'is-valid': formik.touched.name && !formik.errors.discount_percentage
                           }
                         )}
                         autoComplete="off"
-                        disabled={
-                          formik.isSubmitting ||
-                          loadingCategories
-                        }
+                        disabled={formik.isSubmitting || loadingCategories}
                         name="discount"
                         id="discount"
                         placeholder="ex: 5"
+                        min={1}
                       />
                     </>
                   ) : (
                     <>
-                      <label className="fw-bold fs-6 mb-2">
-                        Discount Value:
-                      </label>
+                      <label className="fw-bold fs-6 mb-2">Discount Value:</label>
                       <input
-                        type="text"
-                        {...formik.getFieldProps(
-                          'discount_number'
-                        )}
+                        type="number"
+                        {...formik.getFieldProps('discount_number')}
                         className={clsx(
                           'form-control form-control-solid mb-3 mb-lg-0',
+                          { 'is-invalid': formik.touched && formik.errors.discount_number },
                           {
-                            'is-invalid':
-                              formik.touched &&
-                              formik.errors
-                                .discount_number
-                          },
-                          {
-                            'is-valid':
-                              formik.touched
-                                .name &&
-                              !formik.errors
-                                .discount_number
+                            'is-valid': formik.touched.name && !formik.errors.discount_number
                           }
                         )}
                         autoComplete="off"
-                        disabled={
-                          formik.isSubmitting ||
-                          loadingCategories
-                        }
+                        disabled={formik.isSubmitting || loadingCategories}
                         name="discount_number"
                         id="discount_number"
                         placeholder="ex: 5"
+                        min={1}
                       />
                     </>
                   )}
@@ -564,113 +532,67 @@ const AddProduct = () => {
               {/* categories */}
               <div className="d-flex flex-sm-row flex-column  gap-1 ">
                 <div className="col-md-6 mb-7">
-                  <label className="required fw-bold fs-6 mb-2">
-                    Category:{' '}
-                  </label>
+                  <label className="required fw-bold fs-6 mb-2">Category: </label>
                   <select
                     className="form-select form-select-solid"
-                    {...formik.getFieldProps(
-                      'category_id'
-                    )}
+                    {...formik.getFieldProps('category_id')}
                     name="category_id"
                     id="category_id"
-                    disabled={
-                      formik.isSubmitting ||
-                      loadingCategories
-                    }
+                    disabled={formik.isSubmitting || loadingCategories}
                   >
-                    <option value="">
-                      Select Category
-                    </option>
-                    {categories.map(
-                      (category: any, index) => (
-                        <option
-                          key={index}
-                          value={category.name}
-                        >
-                          {category.name}
-                        </option>
-                      )
-                    )}
+                    <option>Select Category</option>
+                    {categories.map((category: any, index) => (
+                      <option key={index} value={category.name}>
+                        {category.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
 
-              {/* Price */}
               <div>
                 <div className="d-flex flex-sm-row flex-column  gap-1 ">
                   <div className="col-md-6 mb-7">
-                    <label className="required fw-bold fs-6 mb-2">
-                      Price:{' '}
-                    </label>
+                    <label className="required fw-bold fs-6 mb-2">Price: </label>
                     <input
                       type="number"
-                      {...formik.getFieldProps(
-                        'price'
-                      )}
+                      {...formik.getFieldProps('price')}
                       className={clsx(
                         'form-control form-control-solid mb-3 mb-lg-0',
+                        { 'is-invalid': formik.touched && formik.errors.price },
                         {
-                          'is-invalid':
-                            formik.touched &&
-                            formik.errors.price
-                        },
-                        {
-                          'is-valid':
-                            formik.touched
-                              .price &&
-                            !formik.errors.price
+                          'is-valid': formik.touched.price && !formik.errors.price
                         }
                       )}
                       autoComplete="off"
-                      disabled={
-                        formik.isSubmitting ||
-                        loadingCategories
-                      }
-                      min={1}
+                      disabled={formik.isSubmitting || loadingCategories}
                       name="price"
                       id="price"
                       placeholder="100"
+                      min={1}
                     />
                   </div>
-                  {!show_sizes && (
-                    <div className="col-md-6 col-sm-12 mb-7">
-                      <label className="required fw-bold fs-6 mb-2">
-                        Stock:{' '}
-                      </label>
-                      <input
-                        type="number"
-                        {...formik.getFieldProps(
-                          'stock'
-                        )}
-                        className={clsx(
-                          'form-control form-control-solid mb-3 mb-lg-0',
-                          {
-                            'is-invalid':
-                              formik.touched &&
-                              formik.errors.stock
-                          },
-                          {
-                            'is-valid':
-                              formik.touched
-                                .stock &&
-                              !formik.errors.stock
-                          }
-                        )}
-                        autoComplete="off"
-                        disabled={
-                          formik.isSubmitting ||
-                          loadingCategories
+                  <div className="col-md-6 col-sm-12 mb-7">
+                    <label className="required fw-bold fs-6 mb-2">Stock: </label>
+                    <input
+                      type="number"
+                      {...formik.getFieldProps('stock')}
+                      className={clsx(
+                        'form-control form-control-solid mb-3 mb-lg-0',
+                        { 'is-invalid': formik.touched && formik.errors.stock },
+                        {
+                          'is-valid': formik.touched.stock && !formik.errors.stock
                         }
-                        min={1}
-                        name="stock"
-                        id="stock"
-                        placeholder="14"
-                      />
-                    </div>
-                  )}
+                      )}
+                      autoComplete="off"
+                      disabled={formik.isSubmitting || loadingCategories}
+                      name="stock"
+                      id="stock"
+                      placeholder="14"
+                      min={1}
+                    />
+                  </div>
                 </div>
-
                 <div>
                   <label
                     className={clsx({
@@ -682,7 +604,7 @@ const AddProduct = () => {
                   >
                     <input
                       type="checkbox"
-                      checked={showColor}
+                      checked={showColor || selectedOption !== null}
                       onChange={() =>
                         setShowColor(!showColor)
                       }
@@ -692,7 +614,6 @@ const AddProduct = () => {
                     </span>
                   </label>
                 </div>
-                {/* size component */}
                 <div>
                   <label
                     className={clsx({
@@ -714,7 +635,6 @@ const AddProduct = () => {
                     </span>
                   </label>
                 </div>
-
                 {/* begin::Sizes Inputs */}
                 {show_sizes && (
                   <>
@@ -1186,36 +1106,22 @@ const AddProduct = () => {
               {/* begin::Input group */}
               <div className="fv-row mb-7">
                 {/* begin::Label */}
-                <label className="required fw-bold fs-6 mb-2">
-                  Description
-                </label>
+                <label className="required fw-bold fs-6 mb-2">Description</label>
                 {/* end::Label */}
 
                 {/* begin::Input */}
                 <textarea
-                  {...formik.getFieldProps(
-                    'description'
-                  )}
+                  {...formik.getFieldProps('description')}
                   name="description"
-                  id=""
                   className={clsx(
                     'form-control form-control-solid mb-3 mb-lg-0',
+                    { 'is-invalid': formik.touched && formik.errors.description },
                     {
-                      'is-invalid':
-                        formik.touched &&
-                        formik.errors.description
-                    },
-                    {
-                      'is-valid':
-                        formik.touched.name &&
-                        !formik.errors.description
+                      'is-valid': formik.touched.name && !formik.errors.description
                     }
                   )}
                   autoComplete="off"
-                  disabled={
-                    formik.isSubmitting ||
-                    loadingCategories
-                  }
+                  disabled={formik.isSubmitting || loadingCategories}
                 ></textarea>
               </div>
               {/* end::Input group */}
@@ -1226,6 +1132,7 @@ const AddProduct = () => {
                   type="reset"
                   className="btn btn-light me-3"
                   data-kt-users-modal-action="cancel"
+                  onClick={() => navigate('/apps/products')}
                 >
                   Discard
                 </button>
@@ -1235,43 +1142,29 @@ const AddProduct = () => {
                   className="btn btn-primary"
                   data-kt-users-modal-action="submit"
                   disabled={
-                    loadingCategories ||
-                    formik.isSubmitting ||
-                    !formik.isValid ||
-                    !formik.touched
+                    loadingCategories || formik.isSubmitting || !formik.isValid || !formik.touched
                   }
                 >
-                  {!loadingCategories &&
-                    !formik.isSubmitting && (
-                      <span className="indicator-label">
-                        Submit
-                      </span>
-                    )}
-                  {(loadingCategories ||
-                    formik.isSubmitting) && (
-                      <span
-                        className="indicator-progress"
-                        style={{ display: 'block' }}
-                      >
-                        Please wait...
-                        <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
-                      </span>
-                    )}
+                  {!loadingCategories && !formik.isSubmitting && (
+                    <span className="indicator-label">Update</span>
+                  )}
+                  {(loadingCategories || formik.isSubmitting) && (
+                    <span className="indicator-progress" style={{ display: 'block' }}>
+                      Please wait...
+                      <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    </span>
+                  )}
                 </button>
               </div>
               {/* end::Actions */}
             </form>
           </div>
-        </section >
+        </section>
 
-        {(loadingCategories ||
-          formik.isSubmitting) && (
-            <ProcessingLoader />
-          )
-        }
-      </div >
+        {(loadingCategories || formik.isSubmitting) && <ProcessingLoader />}
+      </div>
     </>
   );
 };
 
-export default AddProduct;
+export default EditProduct;

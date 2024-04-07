@@ -16,6 +16,7 @@ import ProductDetails from '../modules/apps/products/productDetails';
 import ProjectsPage from '../modules/apps/projects/ProjectsPage';
 import { DashboardWrapper } from '../pages/dashboard/DashboardWrapper';
 import AddWomen from '../modules/apps/women/AddWomen';
+import WomenList from '../modules/apps/women_list/ProductsPage'
 
 const PrivateRoutes = () => {
   const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'));
@@ -138,16 +139,17 @@ const PrivateRoutes = () => {
             </SuspensedView>
           }
         />
-        <Route 
-        path='apps/women'
-        element={
-          <SuspensedView>
-            <div>test <a href="/apps/women/add/">add</a></div>
-          </SuspensedView>
-        }
+        <Route
+          path='apps/women'
+          element={
+            <SuspensedView>
+              <div>test <a href="/apps/women/add/">add</a></div>
+            </SuspensedView>
+          }
         />
-        <Route path='apps/women/add' element={<AddWomen/>}/>
+        <Route path='apps/women/add' element={<AddWomen />} />
         <Route path="apps/products/add" element={<AddProduct />} />
+        <Route path="apps/women/list" element={<WomenList />} />
         <Route path="apps/products/:productId/edit" element={<EditProduct />} />
         <Route path="apps/products/:productId" element={<ProductDetails />} />
         <Route path="*" element={<Navigate to="/error/404" />} />
