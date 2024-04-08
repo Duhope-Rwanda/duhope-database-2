@@ -1,0 +1,1 @@
+export const shippingAccount = "AJS630151000176"
