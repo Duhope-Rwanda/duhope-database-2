@@ -6,8 +6,8 @@ type Props = {
   id: ID
 }
 
-const UserSelectionCell: FC<Props> = ({id}) => {
-  const {selected, onSelect} = useListView()
+const WomenSelectionCell: FC<Props> = ({ id }) => {
+  const { selected, onSelect } = useListView()
   const isSelected = useMemo(() => selected.includes(id), [id, selected])
   return (
     <div className='form-check form-check-custom form-check-solid'>
@@ -23,5 +23,5 @@ const UserSelectionCell: FC<Props> = ({id}) => {
   )
 }
 
-export { UserSelectionCell }
+export { WomenSelectionCell }
 

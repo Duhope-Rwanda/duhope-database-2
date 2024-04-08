@@ -3,7 +3,7 @@ import { useListView } from '../core/ListViewProvider';
 import { useAppDispatch } from '../../../../../redux/hooks';
 import { delete_product, fetch_products } from '../../../../../redux/products/actions';
 
-const ProductDeleteModalForm = () => {
+const WomenDeleteModalForm = () => {
   const dispatch = useAppDispatch();
   const { itemIdForUpdate, setItemIdForUpdate } = useListView();
 
@@ -53,4 +53,4 @@ const ProductDeleteModalForm = () => {
   );
 };
 
-export { ProductDeleteModalForm };
+export { WomenDeleteModalForm };

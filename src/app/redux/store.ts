@@ -6,6 +6,8 @@ import usersSlice from './features/users/usersSlice';
 import categoriesSlice from './features/categories/categoriesSlice';
 import product_slice from './products/slice';
 import groupsSlice from './features/groups/groupsSlice';
+import womenSlice from './features/women/womenSlice';
+
 const store = configureStore({
 	reducer: {
 		// llg: getUserByUserId,
@@ -17,6 +19,7 @@ const store = configureStore({
 		users: usersSlice,
 		categories: categoriesSlice,
 		groups: groupsSlice,
+		women: womenSlice
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({

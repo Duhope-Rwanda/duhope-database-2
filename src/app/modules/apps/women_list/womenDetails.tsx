@@ -2,40 +2,40 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { delete_product, fetch_products, get_product_by_id } from '../../../redux/products/actions';
+import { deleteWoman, fetchWomen, getWomanById } from '../../../redux/features/women/womenActions';
 import { ProcessingLoader } from '../../../components/loaders/processingLoader'
 
-const ProductDetails: React.FC = () => {
+const WomenDetails: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { loading, selected_product } = useAppSelector((state) => state.productsV2);
-  const { productId } = useParams();
+  const { loadingWomen, selectedWomen } = useAppSelector((state) => state.women);
+  const { womenId } = useParams();
 
-  function handle_product_delete() {
-    if (productId) dispatch(delete_product(productId));
-    dispatch(fetch_products());
-    navigate('/apps/products');
+  const handle_Women_delete = () => {
+    if (womenId) dispatch(deleteWoman(womenId));
+    dispatch(fetchWomen());
+    navigate('/apps/Womens');
   }
 
   useEffect(() => {
     const fetchData = async () => {
-      const product = await dispatch(get_product_by_id(productId));
-      return product;
+      const Women = await dispatch(getWomanById(womenId as string));
+      return Women;
     };
 
     fetchData();
-  }, [dispatch, productId]);
+  }, [dispatch, womenId]);
 
   return (
     <>
-      {selected_product && (
+      {selectedWomen && (
         <>
           <div className="card mb-5 mb-xl-10">
             <div className="card-body pt-9 pb-0">
               <div className="d-flex flex-wrap flex-sm-nowrap mb-3">
                 <div className="me-7 mb-4">
                   <div className="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative">
-                    <img src={selected_product && selected_product.main_image_url} alt="Metronic" />
+                    <img src={selectedWomen && selectedWomen.main_image_url} alt="Metronic" />
                     <div className="position-absolute translate-middle bottom-0 start-100 mb-6 bg-success rounded-circle border border-4 border-white h-20px w-20px"></div>
                   </div>
                 </div>
@@ -45,18 +45,18 @@ const ProductDetails: React.FC = () => {
                     <div className="d-flex flex-column">
                       <div className="d-flex align-items-center mb-2">
                         <p className="text-gray-800 text-hover-primary fs-2 fw-bolder me-1">
-                          {selected_product.name}
+                          {selectedWomen.name}
                         </p>
                       </div>
                       <div className="d-flex align-items-center mb-2">
                         <p className="text-gray-400 text-hover-primary  fw-bolder me-5">
-                          {selected_product.description}
+                          {selectedWomen.description}
                         </p>
                       </div>
 
                       <div className="d-flex flex-wrap fw-bold fs-6 mb-4 pe-2">
                         <p className="d-flex align-items-center text-gray-400 text-hover-primary me-1 mb-2">
-                          {selected_product.category_id}
+                          {selectedWomen.category_id}
                         </p>
                       </div>
                     </div>
@@ -64,7 +64,7 @@ const ProductDetails: React.FC = () => {
                     <div className="d-flex my-4">
                       <button
                         className="btn btn-sm btn-danger me-3"
-                        onClick={handle_product_delete}
+                        onClick={handle_Women_delete}
                       >
                         Delete
                       </button>
@@ -76,7 +76,7 @@ const ProductDetails: React.FC = () => {
                       <div className="d-flex flex-wrap">
                         <div className="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
                           <div className="d-flex align-items-center">
-                            <div className="fs-2 fw-bolder">{selected_product.price} $</div>
+                            <div className="fs-2 fw-bolder">{selectedWomen.price} $</div>
                           </div>
 
                           <div className="fw-bold fs-6 text-gray-400">Price</div>
@@ -84,7 +84,7 @@ const ProductDetails: React.FC = () => {
 
                         <div className="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
                           <div className="d-flex align-items-center">
-                            <div className="fs-2 fw-bolder">{selected_product.ratings}</div>
+                            <div className="fs-2 fw-bolder">{selectedWomen.ratings}</div>
                           </div>
 
                           <div className="fw-bold fs-6 text-gray-400">Ratings</div>
@@ -92,7 +92,7 @@ const ProductDetails: React.FC = () => {
 
                         <div className="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
                           <div className="d-flex align-items-center">
-                            <div className="fs-2 fw-bolder">{selected_product.stock}</div>
+                            <div className="fs-2 fw-bolder">{selectedWomen.stock}</div>
                           </div>
 
                           <div className="fw-bold fs-6 text-gray-400">Available Stock</div>
@@ -112,8 +112,8 @@ const ProductDetails: React.FC = () => {
             </div>
           </div>
           <div className="d-flex gap-5">
-            {selected_product.images.length > 0 &&
-              selected_product.images.map((image, index) => (
+            {selectedWomen.images.length > 0 &&
+              selectedWomen.images.map((image, index) => (
                 <div key={index} className="fv-row  justify-content-center mb-7">
                   <div
                     className="image-input image-input-outline"
@@ -136,9 +136,9 @@ const ProductDetails: React.FC = () => {
         </>
       )}
 
-      {loading && <ProcessingLoader />}
+      {loadingWomen && <ProcessingLoader />}
     </>
   );
 };
 
-export default ProductDetails;
+export default WomenDetails;

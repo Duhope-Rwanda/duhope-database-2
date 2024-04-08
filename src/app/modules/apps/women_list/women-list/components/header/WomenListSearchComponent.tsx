@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { KTIcon } from '../../../../../../../_duhope/helpers'
 
-const ProductsListSearchComponent = ({ handleSearch }) => {
+const WomenListSearchComponent = ({ handleSearch }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleInputChange = (e) => {
@@ -29,4 +29,4 @@ const ProductsListSearchComponent = ({ handleSearch }) => {
   )
 }
 
-export { ProductsListSearchComponent }
+export { WomenListSearchComponent }

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { KTIcon } from '../../../../../../../_duhope/helpers'
 
-const ProductsListToolbar = () => {
+const WomenListToolbar = () => {
   return (
     <div className='d-flex justify-content-end' data-kt-user-table-toolbar='base'>
       {/* <UsersListFilter /> */}
@@ -11,19 +11,15 @@ const ProductsListToolbar = () => {
         <KTIcon iconName='exit-up' className='fs-2' />
         Export */}
       {/* </button> */}
-      {/* end::Export */}
-
-      {/* begin::Add user */}
-      <Link to={`/apps/products/add/`} className=''>
+      <Link to={`/apps/women/add`} className=''>
         <button type='button' className='btn btn-primary' >
           <KTIcon iconName='plus' className='fs-2' />
-          Add Product
+          Add Woman
         </button>
       </Link>
-      {/* end::Add user */}
     </div>
   )
 }
 
-export { ProductsListToolbar }
+export { WomenListToolbar }
 

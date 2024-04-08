@@ -1,37 +1,36 @@
 import { useEffect, useMemo } from 'react';
-import { ColumnInstance, Row, useTable } from 'react-table';
+import { useTable } from 'react-table';
 import { KTCardBody } from '../../../../../../_duhope/helpers';
 import { UsersListPagination } from '../components/pagination/UsersListPagination';
 import { CustomHeaderColumn } from './columns/CustomHeaderColumn';
 import { CustomRow } from './columns/CustomRow';
-import { usersColumns } from './columns/_columns';
-import { fetch_products } from '../../../../../redux/products/actions';
+import { womenColumns } from './columns/_columns';
+import { fetchWomen } from '../../../../../redux/features/women/womenActions';
 import { useAppDispatch, useAppSelector } from '../../../../../redux/hooks';
-import type { TProduct } from '../../../../../redux/products/types';
-import { ProductsListSearchComponent } from "../components/header/ProductsListSearchComponent"
+import { WomenListSearchComponent } from "../components/header/WomenListSearchComponent"
 import { useState } from 'react';
 import { ProcessingLoader } from '../../../../../components/loaders/processingLoader'
 
-const ProductsTable = () => {
+const WomenTable = () => {
   const dispatch = useAppDispatch();
-  const { products, loading } = useAppSelector((state) => state.productsV2);
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const { women, loadingWomen } = useAppSelector((state) => state.women);
+  const [filteredWomen, setFilteredWomen] = useState([]);
 
   const handleSearch = (searchTerm) => {
-    const filtered: any = products.filter((category) =>
-      category.name.toLowerCase().includes(searchTerm.toLowerCase())
+    const filtered: any = women.filter((woman: any) =>
+      woman.firstName.toLowerCase().includes(searchTerm.toLowerCase()) || woman.lastName.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setFilteredProducts(filtered);
+    setFilteredWomen(filtered);
   };
 
   useEffect(() => {
-    dispatch(fetch_products());
+    dispatch(fetchWomen());
   }, [dispatch]);
 
-  const columns = useMemo(() => usersColumns, []);
+  const columns = useMemo(() => womenColumns, []);
   const data = useMemo(
-    () => (filteredProducts.length > 0 ? filteredProducts : products),
-    [filteredProducts, products]
+    () => (filteredWomen.length > 0 ? filteredWomen : women),
+    [filteredWomen, women]
   );
   const { getTableProps, getTableBodyProps, headers, rows, prepareRow } = useTable({
     columns,
@@ -39,7 +38,7 @@ const ProductsTable = () => {
   });
   return (
     <KTCardBody className="py-4">
-      <ProductsListSearchComponent handleSearch={handleSearch} />
+      <WomenListSearchComponent handleSearch={handleSearch} />
       <div className="table-responsive">
         <table
           id="kt_table_users"
@@ -48,14 +47,14 @@ const ProductsTable = () => {
         >
           <thead>
             <tr className="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
-              {headers.map((column: ColumnInstance<TProduct>) => (
+              {headers.map((column: any) => (
                 <CustomHeaderColumn key={column.id} column={column} />
               ))}
             </tr>
           </thead>
           <tbody className="text-gray-600 fw-bold" {...getTableBodyProps()}>
             {rows.length > 0 ? (
-              rows.map((row: Row<TProduct>, i) => {
+              rows.map((row: any, i) => {
                 prepareRow(row);
                 return <CustomRow row={row} key={`row-${i}-${row.id}`} />;
               })
@@ -72,9 +71,9 @@ const ProductsTable = () => {
         </table>
       </div>
       <UsersListPagination />
-      {loading && <ProcessingLoader />}
+      {loadingWomen && <ProcessingLoader />}
     </KTCardBody>
   );
 };
 
-export { ProductsTable };
+export { WomenTable };

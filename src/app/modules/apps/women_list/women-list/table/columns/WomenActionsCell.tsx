@@ -9,7 +9,7 @@ type Props = {
 	id: ID;
 };
 
-const ProductActionsCell: FC<Props> = ({ id }) => {
+const WomenActionsCell: FC<Props> = ({ id }) => {
 	const { setItemIdForUpdate } = useListView();
 
 	useEffect(() => {
@@ -39,7 +39,7 @@ const ProductActionsCell: FC<Props> = ({ id }) => {
 				{/* begin::Menu item */}
 				<div className="menu-item px-3">
 					{/* <a className='menu-link px-3' onClick={openEditModal}> */}
-					<Link to={`/apps/products/${id}`} className="menu-link px-3">
+					<Link to={`/apps/Womens/${id}`} className="menu-link px-3">
 						View
 					</Link>
 					{/* </a> */}
@@ -49,7 +49,7 @@ const ProductActionsCell: FC<Props> = ({ id }) => {
 				{/* begin::Menu item */}
 				<div className="menu-item px-3">
 					{/* <a className='menu-link px-3' onClick={openEditModal}> */}
-					<Link to={`/apps/products/${id}/edit`} className="menu-link px-3">
+					<Link to={`/apps/Womens/${id}/edit`} className="menu-link px-3">
 						Edit
 					</Link>
 					{/* </a> */}
@@ -74,4 +74,4 @@ const ProductActionsCell: FC<Props> = ({ id }) => {
 	);
 };
 
-export { ProductActionsCell };
+export { WomenActionsCell };

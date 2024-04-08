@@ -16,6 +16,23 @@ export type Product = {
   }
 }
 
+export type Woman = {
+  id?: ID
+  name?: string
+  avatar?: string
+  email?: string
+  position?: string
+  role?: string
+  last_login?: string
+  two_steps?: boolean
+  joined_day?: string
+  online?: boolean
+  initials?: {
+    label: string
+    state: string
+  }
+}
+
 export type UsersQueryResponse = Response<Array<Product>>
 
 export const initialUser: Product = {

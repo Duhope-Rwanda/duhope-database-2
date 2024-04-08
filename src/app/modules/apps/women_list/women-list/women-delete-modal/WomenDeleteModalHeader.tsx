@@ -1,7 +1,7 @@
 import { KTIcon } from '../../../../../../_duhope/helpers';
 import { useListView } from '../core/ListViewProvider';
 
-const ProductDeleteModalHeader = () => {
+const WomenDeleteModalHeader = () => {
   const { setItemIdForUpdate } = useListView();
 
   return (
@@ -24,4 +24,4 @@ const ProductDeleteModalHeader = () => {
   );
 };
 
-export { ProductDeleteModalHeader };
+export { WomenDeleteModalHeader };
