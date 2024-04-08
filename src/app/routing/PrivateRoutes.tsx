@@ -15,7 +15,7 @@ import EditProduct from '../modules/apps/products/editProduct';
 import ProductDetails from '../modules/apps/products/productDetails';
 import ProjectsPage from '../modules/apps/projects/ProjectsPage';
 import { DashboardWrapper } from '../pages/dashboard/DashboardWrapper';
-import AddWomen from '../modules/apps/women/AddWomen';
+import AddWomen from '../modules/apps/women_list/AddWomen';
 import WomenList from '../modules/apps/women_list/WomenPage'
 
 const PrivateRoutes = () => {

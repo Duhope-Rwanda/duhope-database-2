@@ -1,1277 +1,808 @@
-import clsx from 'clsx';
-import { useFormik } from 'formik';
 import React, {
-  useEffect,
-  useState
+    useState
 } from 'react';
-import { useNavigate } from 'react-router-dom';
-import * as Yup from 'yup';
-import { toAbsoluteUrl } from '../../../../_duhope/helpers';
 import { PageTitle } from '../../../../_duhope/layout/core';
-import { upload_images } from './utils';
-import {
-  useAppDispatch,
-  useAppSelector
-} from '../../../redux/hooks';
-import {
-  addWoman,
-  fetchWomen
-} from '../../../redux/features/women/womenActions';
-import { fetchCategories } from '../../../redux/features/categories/categoriesActions';
 import "bootstrap-select/dist/css/bootstrap-select.min.css";
 import "bootstrap-select/dist/js/bootstrap-select.min";
-import { ProcessingLoader } from '../../../components/loaders/processingLoader'
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
+import Select from 'react-select';
+import { MdOutlineCancel } from "react-icons/md";
+import { IoAddCircle } from "react-icons/io5";
 
-export const women_schema = Yup.object().shape({
-  name: Yup.string().required('Name is required'),
-  description: Yup.string().required(
-    'Description is required'
-  ),
-  price: Yup.number().required(
-    'Price is required'
-  ),
-  stock: Yup.number().required(
-    'Stock is required'
-  ),
-  category_id: Yup.string().required(
-    'Category is required'
-  ),
-  discount_type: Yup.string().required(
-    'Discount Type is required'
-  ),
-  discount_number: Yup.number(),
-  discount_percentage: Yup.number(),
-  images: Yup.array()
-    .of(Yup.string().url())
-    .required('Images are required'),
-  main_image_url: Yup.string().url(),
-  featured: Yup.boolean().required(
-    'Featured is required'
-  ),
-  points: Yup.number(),
-  ratings: Yup.number(),
-  // sizes for clothes
-  size_XS: Yup.number(),
-  size_S: Yup.number(),
-  size_M: Yup.number(),
-  size_L: Yup.number(),
-  size_XL: Yup.number(),
-  size_XXL: Yup.number(),
-  // sizes for shoes based on the shoes_sizes_count
-  shoe_sizes: Yup.array().of(
-    Yup.object().shape({
-      name: Yup.string().required(
-        'Name is required'
-      ),
-      quantity: Yup.number().required(
-        'Quantity is required'
-      )
-    })
-  ),
-  patternOrColor: Yup.object()
-});
+interface Skill {
+    value: string;
+    label: string;
+}
 
-type WomenForm = Yup.InferType<
-  typeof women_schema
->;
+interface Child {
+    name?: string;
+    gender?: string;
+    age?: string;
+    inschool?: string;
+    schooltype?: string;
+    childillness?: string;
+    childmedicalcondition?: string;
+    childdisability?: string;
+}
 
-const initial_values: WomenForm = {
-  name: '',
-  description: '',
-  category_id: '',
-  price: 0,
-  stock: 0,
-  discount_type: 'percentage',
-  discount_number: 0,
-  discount_percentage: 0,
-  images: [],
-  main_image_url: '',
-  featured: false,
-  points: 0,
-  ratings: 0,
-  // sizes
-  size_XS: 0,
-  size_S: 0,
-  size_M: 0,
-  size_L: 0,
-  size_XL: 0,
-  size_XXL: 0,
-  patternOrColor: {}
-};
+interface Contributor {
+    namee?: string;
+    relationship?: string;
+    primarypro?: string;
+    moneyfood?: string;
+}
+
+interface medicalhistori {
+    hospitillness?: string;
+    medication?: string;
+    hospital?: string;
+}
 
 const AddWomen = () => {
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const {
-    categories,
-    loadingCategories,
-    response
-  } = useAppSelector((state) => state.categories);
-  const [images, setImages] = useState<File[]>(
-    []
-  );
-  const [show_sizes, set_show_sizes] =
-    useState(false);
-  const [Women_type, set_Women_type] =
-    useState<'clothes' | 'shoes'>();
-  const [
-    shoes_sizes_count,
-    set_shoes_sizes_count
-  ] = useState(0);
-  const [showColor, setShowColor] = useState(false)
-  const [selectedOption, setSelectedOption] = useState<any>(null);
 
-  const CustomOption = ({ innerProps, label, data }) => (
-    <div {...innerProps} className='cursor-pointer mb-3 p-2 border-top'>
-      {data.image && (
-        <img src={data.image} alt="" height="30px" width="30px" style={{ marginRight: '8px' }} />
-      )}
-      <span className='text-black'>
-        {label}
-      </span>
-    </div>
-  );
+    type ValueType<OptionType> =
+        | OptionType
+        | ReadonlyArray<OptionType>
+        | null
+        | undefined;
 
-  const formik = useFormik({
-    initialValues: initial_values,
-    validationSchema: women_schema,
-    onSubmit: async (
-      values,
-      { setSubmitting, resetForm }
-    ) => {
-      setSubmitting(true);
-      try {
-        const uploaded_images_urls =
-          await upload_images({
-            files: images,
-            folder_name: 'Womens'
-          });
+    //  --------------    tabs initialization ------------------------
 
-        // get stock total based in individual sizes in case show_sizes is true, if not then get the stock from the stock input
-        const stock_total = show_sizes
-          ? Women_type === 'clothes' &&
-            values.size_XS &&
-            values.size_S &&
-            values.size_M &&
-            values.size_L &&
-            values.size_XL &&
-            values.size_XXL
-            ? values.size_XS +
-            values.size_S +
-            values.size_M +
-            values.size_L +
-            values.size_XL +
-            values.size_XXL
-            : Array.from(
-              {
-                length: shoes_sizes_count
-              },
-              (_, index) => ({
-                name: values[
-                  `shoes_size_${index}`
-                ],
-                quantity:
-                  values[
-                  `shoes_quantity_${index}`
-                  ]
-              })
-            ).reduce(
-              (acc, shoe_size) =>
-                acc + (shoe_size.quantity ?? 0),
-              0
-            )
-          : values.stock;
-        const new_Women: any = {
-          name: values.name,
-          main_image_url: uploaded_images_urls?.[0] ?? '',
-          category_id: values.category_id,
-          images: uploaded_images_urls ?? [],
-          price: values.price ? values.price : 0,
-          patternOrColor: selectedOption ? selectedOption : {},
-          discount_percentage: values.discount_percentage ?? 0,
-          discount_price: values.discount_number ?? 0,
-          ratings: 0,
-          stock: stock_total,
-          // depending on the Women type, the sizes will be different
-          sizes: show_sizes
-            ? Women_type === 'clothes'
-              ? [
-                {
-                  name: 'XS',
-                  quantity: values.size_XS
-                },
-                {
-                  name: 'S',
-                  quantity: values.size_S
-                },
-                {
-                  name: 'M',
-                  quantity: values.size_M
-                },
-                {
-                  name: 'L',
-                  quantity: values.size_L
-                },
-                {
-                  name: 'XL',
-                  quantity: values.size_XL
-                },
-                {
-                  name: 'XXL',
-                  quantity: values.size_XXL
-                }
-              ]
-              : shoes_sizes_count > 0
-                ? // loop over the shoes sizes and grab the name and quantity. if the name and quantity are undefined then don't add them to the array
-                Array.from(
-                  {
-                    length: shoes_sizes_count
-                  },
-                  (_, index) => ({
-                    name: values[`shoes_size_${index}`],
-                    quantity: values[`shoes_quantity_${index}`]
-                  })
-                ).filter(
-                  (shoe_size) => shoe_size.name &&
-                    shoe_size.quantity
-                )
-                : []
-            : [],
-          points: 0,
-          description: values.description,
-          created_at: Date.now(),
-          featured: false,
-          discount_type: values.discount_type ?? 'percentage',
-        };
-        dispatch(addWoman(new_Women));
-        dispatch(fetchWomen());
-        navigate('/apps/Womens');
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setSubmitting(false);
-        // refresh the page
-        if (response === false) {
-          resetForm();
+    const [key, setKey] = useState('Demographics');
+
+    // -------------- End tabs initialization ------------------------ 
+
+    // ----------------  Usestate of input fields ---------------------------------------------------------
+
+    const [formData, setFormData] = useState({
+        image: null,
+        names: "",
+        phoneNumber: '',
+        dateOfBirth: '',
+        emergencynames: '',
+        emergencyphoneNumber: '',
+        emergencyrelation: '',
+        maritalStatus: '',
+        ableToReadAndWrite: '',
+        returnToSchool: '',
+        highestEducationLevel: '',
+        skills: [] as string[],
+        otherSkill: '',
+        bankAccount: '',
+        savingsCooperative: '',
+        housingSituation: '',
+        children: [] as Child[],
+        reasonToJoinProgram: '',
+        contributors: [] as Contributor[],
+        participantPrimaryProvider: '',
+        participantsAlternativeMeansOfIncome: '',
+        howPaySchooLFees: '',
+        otherSourceOfIncome: '',
+        howLongInSexWork: '',
+        howOftenWork: '',
+        previousEmployement: '',
+        generalHealth: '',
+        hivTesting: '',
+        result: '',
+        medication: '',
+        medicalhistories: [] as medicalhistori[],
+        participantDisability: '',
+        participantAddiction: '',
+        participantInsurance: '',
+        bornAndRaised: '',
+        childHoodDescription: '',
+        mentaIllnessHistory: '',
+        commentsOnMentalHistory: '',
+        emotionalHealth: '',
+        otherMemberThatAssist: '',
+        relationShipWithCommunity: '',
+        commentsOnRelationShipWithCommunity: '',
+        haveFriends: '',
+        commentsOnHaveFriends: '',
+        practiceReligion: '',
+        specifyReligion: '',
+        involvementWithReligious: '',
+
+    });
+
+    const handleInputChange = (e) => {
+        if (e.target.type === 'file') {
+            setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+        } else {
+            setFormData({ ...formData, [e.target.name]: e.target.value });
         }
-      }
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log(formData, "data");
+    };
+
+    // ---------------- End  Usestate of input fields ---------------------------------------------------------
+
+    // --------------- Skills ---------------------------------------------------------------------------------
+
+    const [selectedSkills, setSelectedSkills] = useState<ValueType<Skill>>([]);
+    const [otherSkill, setOtherSkill] = useState<string>('');
+
+    const skills: Skill[] = [
+        { value: 'Tailoring', label: 'Tailoring' },
+        { value: 'Sewing', label: 'Sewing' },
+        { value: 'Beautician', label: 'Beautician' },
+        { value: 'Jewelry', label: 'Jewelry' },
+        { value: 'Cooking', label: 'Cooking' },
+        { value: 'Computer', label: 'Computer' },
+        { value: 'Others', label: 'Others' },
+    ];
+
+    const handleSkillChange = (selectedOptions: ValueType<Skill>) => {
+        setSelectedSkills(selectedOptions);
+        const selectedSkillsValues = Array.isArray(selectedOptions) ? selectedOptions.map(skill => skill.value) : [];
+        setFormData({ ...formData, skills: selectedSkillsValues });
+        const otherOptionSelected = selectedOptions && Array.isArray(selectedOptions) && selectedOptions.some(option => option.value === 'Others');
+        if (!otherOptionSelected) {
+            setOtherSkill('');
+        }
     }
-  });
 
-  const handle_image_change = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (event.target.files) {
-      const new_images = Array.from(
-        event.target.files
-      );
-      setImages([...images, ...new_images]);
+    const handleOtherSkillChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setOtherSkill(event.target.value);
+        setFormData({ ...formData, otherSkill: event.target.value });
     }
-  };
 
-  const handle_remove_image = (
-    removeIdx: number
-  ) => {
-    const new_images = images.filter(
-      (_, index) => index !== removeIdx
-    );
-    setImages(new_images);
-  };
+    // ----------------- Skills End -------------------------------------------------------------------------
 
-  useEffect(() => {
-    dispatch(fetchCategories());
-  }, [dispatch]);
-  return (
-    <>
-      <PageTitle>Add Women</PageTitle>
+    // --------------- Add Child Row --------------------------------------------------------------------------
 
-      <div className=" card mb-5 mb-xl-10 p-10 ">
-        <section className="panel panel-default">
-          <div className="panel-body">
-            <form
-              id="kt_modal_add_user_form"
-              className="form"
-              onSubmit={formik.handleSubmit}
-              noValidate
-            >
-              {/* begin::Scroll */}
-              <div
-                className="d-flex flex-column scroll-y me-n7 pe-7"
-                id="kt_modal_add_user_scroll"
-                data-kt-scroll="true"
-                data-kt-scroll-activate="{default: false, lg: true}"
-                data-kt-scroll-max-height="auto"
-                data-kt-scroll-dependencies="#kt_modal_add_user_header"
-                data-kt-scroll-wrappers="#kt_modal_add_user_scroll"
-                data-kt-scroll-offset="300px"
-              >
-                {/* begin::Label */}
-                <label className="required fw-bold fs-6 mb-2">
-                  Images
-                </label>
-                {/* end::Label */}
-                <div className="d-flex">
-                  {images.length === 0 && (
-                    <div className="fv-row  justify-content-center mb-7">
-                      {/* select images */}
+    const [children, setChildren] = useState([{ id: 1 }]);
 
-                      <input
-                        type="file"
-                        name="avatar"
-                        multiple
-                        onChange={
-                          handle_image_change
-                        }
-                        accept=".png, .jpg, .jpeg"
-                      />
-                    </div>
-                  )}
-                  {images.map((image, index) => (
-                    <div
-                      key={index}
-                      className="fv-row  justify-content-center mb-7 me-3 "
-                    >
-                      <div
-                        className="image-input image-input-outline p"
-                        data-kt-image-input="true"
-                        style={{
-                          backgroundImage: `url('${URL.createObjectURL(
-                            image
-                          )}')`
-                        }}
-                      >
-                        {/* begin::Preview existing avatar */}
-                        <div
-                          className="image-input-wrapper w-125px h-125px"
-                          style={{
-                            backgroundImage: `url('${URL.createObjectURL(
-                              image
-                            )}')`
-                          }}
-                        ></div>
-                        {/* end::Preview existing avatar */}
+    const addAnotherChild = () => {
+        const newId = children.length + 1;
+        setChildren([...children, { id: newId }]);
+        setFormData({ ...formData, children: [...formData.children, {} as Child] });
+    };
 
-                        {/* begin::Label */}
-                        <label
-                          className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                          data-kt-image-input-action="change"
-                          data-bs-toggle="tooltip"
-                          title="Change avatar"
-                          onClick={() =>
-                            handle_remove_image(
-                              index
-                            )
-                          }
+    const removeChild = (indexToRemove) => {
+        setChildren(children.filter((_, index) => index !== indexToRemove));
+        setFormData({ ...formData, children: formData.children.filter((_, index) => index !== indexToRemove) });
+    };
+
+    const handleChildInputChange = (e, index, fieldName) => {
+        const newChildren = [...formData.children];
+        if (!newChildren[index]) {
+            newChildren[index] = {};
+        }
+        newChildren[index][fieldName] = e.target.value;
+        setFormData({ ...formData, children: newChildren });
+    };
+
+    // --------------- End Add Child Row ---------------------------------
+
+    // --------------- Add People who contribute to the household Row -------------------------------------
+
+    const [householdContributor, setHouseHoldContributor] = useState([{ id: 1 }]);
+
+    const addAnotherContributor = () => {
+        const newHouseHoldId = householdContributor.length + 1;
+        setHouseHoldContributor([...householdContributor, { id: newHouseHoldId }]);
+        setFormData({ ...formData, contributors: [...formData.contributors, {} as Contributor] })
+    };
+
+    const removeHousehold = (householdIdToRemove) => {
+        setHouseHoldContributor(householdContributor.filter((_, index) => index !== householdIdToRemove));
+        setFormData({ ...formData, contributors: formData.contributors.filter((_, index) => index !== householdIdToRemove) });
+    };
+
+    const handleHouseholdInputChange = (e, index, fieldName) => {
+        const newHouseholdContributor = [...formData.contributors];
+        if (!newHouseholdContributor[index]) {
+            newHouseholdContributor[index] = {};
+        }
+        newHouseholdContributor[index][fieldName] = e.target.value;
+        setFormData({ ...formData, contributors: newHouseholdContributor });
+    };
+
+    // --------------- End Add People who contribute to the household Row ---------------------------------
+
+    // --------------- Add Medical history Row ---------------------------------------------------------
+
+    const [medicalHistory, setMedicalHistory] = useState([{ id: 1 }]);
+
+    const addAnotherMedicalHistory = () => {
+        const newMedicalId = medicalHistory.length + 1;
+        setMedicalHistory([...medicalHistory, { id: newMedicalId }]);
+        setFormData({ ...formData, medicalhistories: [...formData.medicalhistories, {} as medicalhistori] })
+    };
+
+    const removeMedical = (medicalIdToRemove) => {
+        setMedicalHistory(medicalHistory.filter((_, index) => index !== medicalIdToRemove));
+        setFormData({ ...formData, medicalhistories: formData.medicalhistories.filter((_, index) => index !== medicalIdToRemove) });
+    };
+
+    const handleMedicalHistoryInputChange = (e, index, fieldName) => {
+        const newMedicalHistories = [...formData.medicalhistories];
+        if (!newMedicalHistories[index]) {
+            newMedicalHistories[index] = {};
+        }
+        newMedicalHistories[index][fieldName] = e.target.value;
+        setFormData({ ...formData, medicalhistories: newMedicalHistories });
+    };
+
+    // --------------- End Add Medical history Row -----------------------------------------------------
+
+
+    return (
+
+        <>
+            <PageTitle>Add Woman</PageTitle>
+            <div className=" card mb-5 mb-xl-10 p-10 ">
+                <section className="panel panel-default">
+                    <div className="panel-body">
+                        <form
+                            id="kt_modal_add_user_form"
+                            className="form"
                         >
-                          <i className="bi bi-x fs-7"></i>
-                        </label>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {images.length > 0 && (
-                  <div className="fv-row  justify-content-center mb-7 me-3 ">
-                    <div
-                      className={`image-input image-input-outline`}
-                      data-kt-image-input="true"
-                      id="kt_image_1"
-                    >
-                      {/* begin::Preview existing avatar */}
-                      <div
-                        className="image-input-wrapper w-50px h-50px"
-                        style={{
-                          backgroundImage: `url('${toAbsoluteUrl(
-                            '/media/image.png'
-                          )}')`
-                        }}
-                      ></div>
-                      {/* end::Preview existing avatar */}
-
-                      {/* begin::Label */}
-                      <label
-                        className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                        data-kt-image-input-action="change"
-                        data-bs-toggle="tooltip"
-                        title="Change avatar"
-                      >
-                        <i className="bi bi-plus fs-7"></i>
-                        {/* begin::Inputs */}
-                        <input
-                          type="file"
-                          accept=".png, .jpg, .jpeg"
-                          {...formik.getFieldProps(
-                            'images'
-                          )}
-                          name="images"
-                          multiple
-                          onChange={
-                            handle_image_change
-                          }
-                        />
-                        <input
-                          type="hidden"
-                          name="profile_avatar_remove"
-                        />
-                        {/* end::Inputs */}
-                      </label>
-                      {/* end::Label */}
-                    </div>
-                  </div>
-                )}
-
-                <div className="d-flex flex-sm-row flex-column  gap-1 ">
-                  {/* begin::Input group */}
-                  <div className="col-md-12 mb-7">
-                    {/* begin::Label */}
-                    <label className="required fw-bold fs-6 mb-2">
-                      Name
-                    </label>
-                    {/* end::Label */}
-
-                    {/* begin::Input */}
-                    <input
-                      placeholder="name"
-                      {...formik.getFieldProps(
-                        'name'
-                      )}
-                      type="text"
-                      name="name"
-                      className={clsx(
-                        'form-control form-control-solid mb-3 mb-lg-0',
-                        {
-                          'is-invalid':
-                            formik.touched &&
-                            formik.errors.name
-                        },
-                        {
-                          'is-valid':
-                            formik.touched.name &&
-                            !formik.errors.name
-                        }
-                      )}
-                      autoComplete="off"
-                      disabled={
-                        formik.isSubmitting ||
-                        loadingCategories
-                      }
-                    />
-
-                    {/* end::Input */}
-                  </div>
-                </div>
-              </div>
-
-              {/* end::Scroll */}
-              <div className="d-flex flex-sm-row flex-column mb-7 gap-1">
-                <div className="col-md-6 mr-3">
-                  <label className="fw-bold fs-6 mb-2">
-                    Discount Type:
-                  </label>
-                  <select
-                    className="form-select form-select-solid"
-                    {...formik.getFieldProps(
-                      'discount_type'
-                    )}
-                  >
-                    <option value="percentage">
-                      Percentage
-                    </option>
-                    <option value="price">
-                      Price
-                    </option>
-                  </select>
-                </div>
-
-                <div className="col-md-6">
-                  {formik.values.discount_type ===
-                    'percentage' ? (
-                    <>
-                      <label className="fw-bold fs-6 mb-2">
-                        Discount Percentage:
-                      </label>
-                      <input
-                        type="text"
-                        {...formik.getFieldProps(
-                          'discount'
-                        )}
-                        className={clsx(
-                          'form-control form-control-solid mb-3 mb-lg-0',
-                          {
-                            'is-invalid':
-                              formik.touched &&
-                              formik.errors
-                                .discount_percentage
-                          },
-                          {
-                            'is-valid':
-                              formik.touched
-                                .name &&
-                              !formik.errors
-                                .discount_percentage
-                          }
-                        )}
-                        autoComplete="off"
-                        disabled={
-                          formik.isSubmitting ||
-                          loadingCategories
-                        }
-                        name="discount"
-                        id="discount"
-                        placeholder="ex: 5"
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <label className="fw-bold fs-6 mb-2">
-                        Discount Value:
-                      </label>
-                      <input
-                        type="text"
-                        {...formik.getFieldProps(
-                          'discount_number'
-                        )}
-                        className={clsx(
-                          'form-control form-control-solid mb-3 mb-lg-0',
-                          {
-                            'is-invalid':
-                              formik.touched &&
-                              formik.errors
-                                .discount_number
-                          },
-                          {
-                            'is-valid':
-                              formik.touched
-                                .name &&
-                              !formik.errors
-                                .discount_number
-                          }
-                        )}
-                        autoComplete="off"
-                        disabled={
-                          formik.isSubmitting ||
-                          loadingCategories
-                        }
-                        name="discount_number"
-                        id="discount_number"
-                        placeholder="ex: 5"
-                      />
-                    </>
-                  )}
-                </div>
-              </div>
-
-              {/* categories */}
-              <div className="d-flex flex-sm-row flex-column  gap-1 ">
-                <div className="col-md-6 mb-7">
-                  <label className="required fw-bold fs-6 mb-2">
-                    Category:{' '}
-                  </label>
-                  <select
-                    className="form-select form-select-solid"
-                    {...formik.getFieldProps(
-                      'category_id'
-                    )}
-                    name="category_id"
-                    id="category_id"
-                    disabled={
-                      formik.isSubmitting ||
-                      loadingCategories
-                    }
-                  >
-                    <option value="">
-                      Select Category
-                    </option>
-                    {categories.map(
-                      (category: any, index) => (
-                        <option
-                          key={index}
-                          value={category.name}
-                        >
-                          {category.name}
-                        </option>
-                      )
-                    )}
-                  </select>
-                </div>
-              </div>
-
-              {/* Price */}
-              <div>
-                <div className="d-flex flex-sm-row flex-column  gap-1 ">
-                  <div className="col-md-6 mb-7">
-                    <label className="required fw-bold fs-6 mb-2">
-                      Price:{' '}
-                    </label>
-                    <input
-                      type="number"
-                      {...formik.getFieldProps(
-                        'price'
-                      )}
-                      className={clsx(
-                        'form-control form-control-solid mb-3 mb-lg-0',
-                        {
-                          'is-invalid':
-                            formik.touched &&
-                            formik.errors.price
-                        },
-                        {
-                          'is-valid':
-                            formik.touched
-                              .price &&
-                            !formik.errors.price
-                        }
-                      )}
-                      autoComplete="off"
-                      disabled={
-                        formik.isSubmitting ||
-                        loadingCategories
-                      }
-                      min={1}
-                      name="price"
-                      id="price"
-                      placeholder="100"
-                    />
-                  </div>
-                  {!show_sizes && (
-                    <div className="col-md-6 col-sm-12 mb-7">
-                      <label className="required fw-bold fs-6 mb-2">
-                        Stock:{' '}
-                      </label>
-                      <input
-                        type="number"
-                        {...formik.getFieldProps(
-                          'stock'
-                        )}
-                        className={clsx(
-                          'form-control form-control-solid mb-3 mb-lg-0',
-                          {
-                            'is-invalid':
-                              formik.touched &&
-                              formik.errors.stock
-                          },
-                          {
-                            'is-valid':
-                              formik.touched
-                                .stock &&
-                              !formik.errors.stock
-                          }
-                        )}
-                        autoComplete="off"
-                        disabled={
-                          formik.isSubmitting ||
-                          loadingCategories
-                        }
-                        min={1}
-                        name="stock"
-                        id="stock"
-                        placeholder="14"
-                      />
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    className={clsx({
-                      'col-md-col gap-3':
-                        showColor,
-                      'mb-7': !showColor
-                    })}
-                    style={{ marginTop: '1rem' }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={showColor}
-                      onChange={() =>
-                        setShowColor(!showColor)
-                      }
-                    />
-                    <span className=" fw-bold fs-6 mx-4">
-                      Has color or pattern
-                    </span>
-                  </label>
-                </div>
-                {/* size component */}
-                <div>
-                  <label
-                    className={clsx({
-                      'col-md-col gap-3':
-                        show_sizes,
-                      'mb-7': !show_sizes
-                    })}
-                    style={{ marginTop: '1rem' }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={show_sizes}
-                      onChange={() =>
-                        set_show_sizes(!show_sizes)
-                      }
-                    />
-                    <span className=" fw-bold fs-6 mx-4">
-                      Size?
-                    </span>
-                  </label>
-                </div>
-
-                {/* begin::Sizes Inputs */}
-                {show_sizes && (
-                  <>
-                    <div className="d-flex flex-sm-row flex-column  gap-1 ">
-                      <div className="col-md-6 mb-7">
-                        <label
-                          className="required fw-bold fs-6 mb-2"
-                          style={{
-                            marginTop: '1rem'
-                          }}
-                        >
-                          Women Type:
-                        </label>
-                        <select
-                          className="form-select form-select-solid"
-                          onChange={(e) =>
-                            set_Women_type(
-                              e.target
-                                .value as any
-                            )
-                          }
-                        >
-                          <option value="">
-                            Select Women Type
-                          </option>
-                          <option value="clothes">
-                            Clothes
-                          </option>
-                          <option value="shoes">
-                            Shoes
-                          </option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="col-md-col gap-3 my-7">
-                      {Women_type ===
-                        'clothes' && (
-                          <div className="col-md-col gap-3 my-7">
-                            <fieldset className="container">
-                              <legend>Sizes</legend>
-                              <div
-                                style={{
-                                  width:
-                                    'fit-content'
-                                }}
-                                className="d-flex flex-sm-row mb-7 align-items-center row"
-                              >
-                                <label
-                                  htmlFor="size_XS"
-                                  className="col"
-                                >
-                                  XS
-                                </label>
-                                <input
-                                  placeholder="20"
-                                  {...formik.getFieldProps(
-                                    'size_XS'
-                                  )}
-                                  type="number"
-                                  name="size_XS"
-                                  className={clsx(
-                                    'form-control form-control-solid mb-3 mb-lg-0 ml-5 col',
-                                    {
-                                      'is-invalid':
-                                        formik.touched &&
-                                        formik
-                                          .errors
-                                          .size_XS
-                                    },
-                                    {
-                                      'is-valid':
-                                        formik
-                                          .touched
-                                          .size_XS &&
-                                        !formik
-                                          .errors
-                                          .size_XS
-                                    }
-                                  )}
-                                  style={{
-                                    maxWidth:
-                                      '10rem'
-                                  }}
-                                  autoComplete="off"
-                                  disabled={
-                                    formik.isSubmitting ||
-                                    loadingCategories
-                                  }
-                                />
-                              </div>
-
-                              <div
-                                style={{
-                                  width:
-                                    'fit-content'
-                                }}
-                                className="d-flex flex-sm-row mb-7 align-items-center row"
-                              >
-                                <label
-                                  className="col"
-                                  htmlFor="size_S"
-                                >
-                                  S
-                                </label>
-                                <input
-                                  placeholder="20"
-                                  {...formik.getFieldProps(
-                                    'size_S'
-                                  )}
-                                  type="number"
-                                  name="size_S"
-                                  className={clsx(
-                                    'form-control form-control-solid mb-3 mb-lg-0 col',
-                                    {
-                                      'is-invalid':
-                                        formik.touched &&
-                                        formik
-                                          .errors
-                                          .size_S
-                                    },
-                                    {
-                                      'is-valid':
-                                        formik
-                                          .touched
-                                          .size_S &&
-                                        !formik
-                                          .errors
-                                          .size_S
-                                    }
-                                  )}
-                                  style={{
-                                    maxWidth:
-                                      '10rem'
-                                  }}
-                                  autoComplete="off"
-                                  disabled={
-                                    formik.isSubmitting ||
-                                    loadingCategories
-                                  }
-                                />
-                              </div>
-
-                              <div
-                                style={{
-                                  width:
-                                    'fit-content'
-                                }}
-                                className="d-flex flex-sm-row mb-7 gap-4 align-items-center row"
-                              >
-                                <label
-                                  htmlFor="size_M"
-                                  className="col"
-                                >
-                                  M
-                                </label>
-                                <input
-                                  placeholder="20"
-                                  {...formik.getFieldProps(
-                                    'size_M'
-                                  )}
-                                  type="number"
-                                  name="size_M"
-                                  className={clsx(
-                                    'form-control form-control-solid mb-3 mb-lg-0 col',
-                                    {
-                                      'is-invalid':
-                                        formik.touched &&
-                                        formik
-                                          .errors
-                                          .size_M
-                                    },
-                                    {
-                                      'is-valid':
-                                        formik
-                                          .touched
-                                          .size_M &&
-                                        !formik
-                                          .errors
-                                          .size_M
-                                    }
-                                  )}
-                                  style={{
-                                    maxWidth:
-                                      '10rem'
-                                  }}
-                                  autoComplete="off"
-                                  disabled={
-                                    formik.isSubmitting ||
-                                    loadingCategories
-                                  }
-                                />
-                              </div>
-
-                              <div
-                                style={{
-                                  width:
-                                    'fit-content'
-                                }}
-                                className="d-flex flex-sm-row mb-7 gap-4 align-items-center row"
-                              >
-                                <label
-                                  htmlFor="size_L"
-                                  className="col"
-                                >
-                                  L
-                                </label>
-                                <input
-                                  placeholder="20"
-                                  {...formik.getFieldProps(
-                                    'size_L'
-                                  )}
-                                  type="number"
-                                  name="size_L"
-                                  className={clsx(
-                                    'form-control form-control-solid mb-3 mb-lg-0 col',
-                                    {
-                                      'is-invalid':
-                                        formik.touched &&
-                                        formik
-                                          .errors
-                                          .size_L
-                                    },
-                                    {
-                                      'is-valid':
-                                        formik
-                                          .touched
-                                          .size_L &&
-                                        !formik
-                                          .errors
-                                          .size_L
-                                    }
-                                  )}
-                                  style={{
-                                    maxWidth:
-                                      '10rem'
-                                  }}
-                                  autoComplete="off"
-                                  disabled={
-                                    formik.isSubmitting ||
-                                    loadingCategories
-                                  }
-                                />
-                              </div>
-
-                              <div
-                                style={{
-                                  width:
-                                    'fit-content'
-                                }}
-                                className="d-flex flex-sm-row mb-7 gap-4 align-items-center row"
-                              >
-                                <label
-                                  htmlFor="size_XL"
-                                  className="col"
-                                >
-                                  XL
-                                </label>
-                                <input
-                                  placeholder="20"
-                                  {...formik.getFieldProps(
-                                    'size_XL'
-                                  )}
-                                  type="number"
-                                  name="size_XL"
-                                  className={clsx(
-                                    'form-control form-control-solid mb-3 mb-lg-0 col',
-                                    {
-                                      'is-invalid':
-                                        formik.touched &&
-                                        formik
-                                          .errors
-                                          .size_XL
-                                    },
-                                    {
-                                      'is-valid':
-                                        formik
-                                          .touched
-                                          .size_XL &&
-                                        !formik
-                                          .errors
-                                          .size_XL
-                                    }
-                                  )}
-                                  style={{
-                                    maxWidth:
-                                      '10rem'
-                                  }}
-                                  autoComplete="off"
-                                  disabled={
-                                    formik.isSubmitting ||
-                                    loadingCategories
-                                  }
-                                />
-                              </div>
-
-                              <div
-                                style={{
-                                  width:
-                                    'fit-content'
-                                }}
-                                className="d-flex flex-sm-row mb-7 gap-4 align-items-center row"
-                              >
-                                <label
-                                  htmlFor="size_XXL"
-                                  className="col"
-                                >
-                                  XXL
-                                </label>
-                                <input
-                                  placeholder="20"
-                                  {...formik.getFieldProps(
-                                    'size_XXL'
-                                  )}
-                                  type="number"
-                                  name="size_XXL"
-                                  className={clsx(
-                                    'form-control form-control-solid mb-3 mb-lg-0 col',
-                                    {
-                                      'is-invalid':
-                                        formik.touched &&
-                                        formik
-                                          .errors
-                                          .size_XXL
-                                    },
-                                    {
-                                      'is-valid':
-                                        formik
-                                          .touched
-                                          .size_XXL &&
-                                        !formik
-                                          .errors
-                                          .size_XXL
-                                    }
-                                  )}
-                                  style={{
-                                    maxWidth:
-                                      '10rem'
-                                  }}
-                                  autoComplete="off"
-                                  disabled={
-                                    formik.isSubmitting ||
-                                    loadingCategories
-                                  }
-                                />
-                              </div>
-                            </fieldset>
-                          </div>
-                        )}
-                      {Women_type ===
-                        'shoes' && (
-                          <>
-                            {/* loop over the shoes_sizes_count and render two input fields for the name and quantity of the shoe size */}
-                            {Array.from(
-                              {
-                                length:
-                                  shoes_sizes_count
-                              },
-                              (_, index) => (
-                                <div
-                                  key={index}
-                                  className="d-flex flex-sm-row flex-column  gap-1 "
-                                >
-                                  <div className="col-md-6 mb-7">
-                                    <label className="required fw-bold fs-6 mb-2">
-                                      Shoe Size:
-                                    </label>
-                                    <input
-                                      type="text"
-                                      {...formik.getFieldProps(
-                                        `shoes_size_${index}`
-                                      )}
-                                      className={clsx(
-                                        'form-control form-control-solid mb-3 mb-lg-0',
-                                        {
-                                          'is-invalid':
-                                            formik.touched &&
-                                            formik
-                                              .errors[
-                                            `shoes_size_${index}`
-                                            ]
-                                        },
-                                        {
-                                          'is-valid':
-                                            formik
-                                              .touched[
-                                            `shoes_size_${index}`
-                                            ] &&
-                                            !formik
-                                              .errors[
-                                            `shoes_size_${index}`
-                                            ]
-                                        }
-                                      )}
-                                      autoComplete="off"
-                                      disabled={
-                                        formik.isSubmitting ||
-                                        loadingCategories
-                                      }
-                                      name={`shoes_size_${index}`}
-                                      id={`shoes_size_${index}`}
-                                      placeholder="Size"
-                                    />
-                                  </div>
-                                  <div className="col-md-6 col-sm-12 mb-7">
-                                    <label className="required fw-bold fs-6 mb-2">
-                                      Quantity:
-                                    </label>
-                                    <input
-                                      type="number"
-                                      {...formik.getFieldProps(
-                                        `shoes_quantity_${index}`
-                                      )}
-                                      className={clsx(
-                                        'form-control form-control-solid mb-3 mb-lg-0',
-                                        {
-                                          'is-invalid':
-                                            formik.touched &&
-                                            formik
-                                              .errors[
-                                            `shoes_quantity_${index}`
-                                            ]
-                                        },
-                                        {
-                                          'is-valid':
-                                            formik
-                                              .touched[
-                                            `shoes_quantity_${index}`
-                                            ] &&
-                                            !formik
-                                              .errors[
-                                            `shoes_quantity_${index}`
-                                            ]
-                                        }
-                                      )}
-                                      autoComplete="off"
-                                      disabled={
-                                        formik.isSubmitting ||
-                                        loadingCategories
-                                      }
-                                      name={`shoes_quantity_${index}`}
-                                      id={`shoes_quantity_${index}`}
-                                      placeholder="Quantity"
-                                    />
-                                  </div>
-                                </div>
-                              )
-                            )}
-                            {/* Add button that when clicked will create a new input field to insert the desired name, and quantity of shoes sizes */}
-                            <button
-                              type="button"
-                              className="btn btn-sm btn-secondary"
-                              onClick={() =>
-                                set_shoes_sizes_count(
-                                  shoes_sizes_count +
-                                  1
-                                )
-                              }
+                            <Tabs
+                                activeKey={key}
+                                onSelect={(k) => setKey(k as string)}
+                                id="justify-tab-example"
+                                className="mb-3"
+                                justify
                             >
-                              + Add Shoe Size
-                            </button>
-                          </>
-                        )}
+
+                                {/* begin::demographics tab */}
+                                <Tab eventKey="Demographics" title="Demographics" className='pt-5'>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} controlId="formFile" className="mb-3">
+                                            <Form.Label>Image</Form.Label>
+                                            <Form.Control required type="file" name="image" onChange={handleInputChange} />
+                                        </Form.Group>
+                                        <Form.Group as={Col} >
+                                            <Form.Label>Names</Form.Label>
+                                            <Form.Control required type='text' name="names" placeholder="Full Names" value={formData.names} onChange={handleInputChange} />
+                                        </Form.Group>
+                                        <Form.Group as={Col} >
+                                            <Form.Label>Phone Number</Form.Label>
+                                            <Form.Control required type='tel' placeholder="Phone Number" name="phoneNumber" value={formData.phoneNumber} onChange={handleInputChange} />
+                                        </Form.Group>
+                                        <Form.Group as={Col} controlId="formGridPassword">
+                                            <Form.Label>Date of birth</Form.Label>
+                                            <Form.Control required type="date" name="dateOfBirth" placeholder="Date Of Birth" value={formData.dateOfBirth} onChange={handleInputChange} />
+                                        </Form.Group>
+                                    </Row>
+                                    <h4>Emergency Contact</h4>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} >
+                                            <Form.Label>Names</Form.Label>
+                                            <Form.Control required type='text' placeholder="Emergency Contact Names" name="emergencynames" value={formData.emergencynames} onChange={handleInputChange} />
+                                        </Form.Group>
+                                        <Form.Group as={Col} >
+                                            <Form.Label>Phone Number</Form.Label>
+                                            <Form.Control required type='tel' placeholder="Emergency Contact Phone" name="emergencyphoneNumber" value={formData.emergencyphoneNumber} onChange={handleInputChange} />
+                                        </Form.Group>
+                                        <Form.Group as={Col} controlId="formGridPassword">
+                                            <Form.Label>Relation</Form.Label>
+                                            <Form.Control required type='text' placeholder="Emergency Contact Relation" name="emergencyrelation" value={formData.emergencyrelation} onChange={handleInputChange} />
+                                        </Form.Group>
+                                    </Row>
+                                    <h4>Details</h4>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} >
+                                            <Form.Label>Marital Status</Form.Label>
+                                            <Form.Select required name="maritalStatus" value={formData.maritalStatus} onChange={handleInputChange}>
+                                                <option value="">Select</option>
+                                                <option value="single">Single</option>
+                                                <option value="legally">Legally Married</option>
+                                                <option value="unoficially">Unoficially Married</option>
+                                                <option value="separated">Separated/Divorced</option>
+                                                <option value="widowed">Widowed</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                        <Form.Group as={Col} >
+                                            <Form.Label>Is the Participant able to read and write ?</Form.Label>
+                                            <Form.Select required name="ableToReadAndWrite" value={formData.ableToReadAndWrite} onChange={handleInputChange} >
+                                                <option value="">Select</option>
+                                                <option value="yes">Yes</option>
+                                                <option value="no">No</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                        <Form.Group as={Col} controlId="formGridPassword">
+                                            <Form.Label>Does she want to return to school ?</Form.Label>
+                                            <Form.Select required name="returnToSchool" value={formData.returnToSchool} onChange={handleInputChange} >
+                                                <option value="">Select</option>
+                                                <option value="yes">Yes</option>
+                                                <option value="no">No</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                    </Row>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} >
+                                            <Form.Label>Highest Level Of Education</Form.Label>
+                                            <Form.Control required type='text' placeholder="Highest Education Level" name="highestEducationLevel" value={formData.highestEducationLevel} onChange={handleInputChange} />
+                                        </Form.Group>
+                                        <div>
+                                            <Form.Group as={Col} >
+                                                <Form.Label>Skills</Form.Label>
+                                                <Select
+                                                    required
+                                                    className='mt-1'
+                                                    options={skills}
+                                                    isSearchable={true}
+                                                    isClearable={true}
+                                                    isMulti
+                                                    value={selectedSkills}
+                                                    onChange={handleSkillChange}
+                                                    placeholder="Select Skill"
+                                                />
+                                            </Form.Group>
+                                            {Array.isArray(selectedSkills) && selectedSkills.some((skill: Skill) => skill.value === 'Others') &&
+                                                <Form.Group as={Col}>
+                                                    <Form.Label>Other Skill</Form.Label>
+                                                    <Form.Control
+                                                        type='text'
+                                                        value={otherSkill}
+                                                        onChange={handleOtherSkillChange}
+                                                        placeholder="Specify Other Skill"
+                                                    />
+                                                </Form.Group>
+                                            }
+                                        </div>
+                                    </Row>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} >
+                                            <Form.Label>Does She have Bank Account ?</Form.Label>
+                                            <Form.Select required name="bankAccount" value={formData.bankAccount} onChange={handleInputChange} >
+                                                <option value="">Select</option>
+                                                <option value="yes">Yes</option>
+                                                <option value="no">No</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                        <Form.Group as={Col} >
+                                            <Form.Label>She belong to a savings cooperative ?</Form.Label>
+                                            <Form.Select required name="savingsCooperative" value={formData.savingsCooperative} onChange={handleInputChange} >
+                                                <option value="">Select</option>
+                                                <option value="yes">Yes</option>
+                                                <option value="no">No</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                        <Form.Group as={Col} controlId="formGridPassword">
+                                            <Form.Label> Participants'housing situation</Form.Label>
+                                            <Form.Select required name="housingSituation" value={formData.housingSituation} onChange={handleInputChange} >
+                                                <option value="">Select</option>
+                                                <option value="rent">Rent</option>
+                                                <option value="own">Own</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                    </Row>
+                                    <h4>Children</h4>
+                                    <div className='d-flex flex-column justify-content-center align-content-center mb-5'>
+                                        {children.map((_, index) => (
+                                            <div key={index}>
+                                                <h6>Child {index + 1}</h6>
+                                                <Row className="mb-3">
+                                                    <Form.Group as={Col}>
+                                                        <Form.Label>Name</Form.Label>
+                                                        <Form.Control
+                                                            required
+                                                            type='text'
+                                                            placeholder="Full Names"
+                                                            value={formData.children[index]?.name || ''}
+                                                            onChange={(e) => handleChildInputChange(e, index, 'name')}
+                                                        />
+                                                    </Form.Group>
+                                                    <Form.Group as={Col}>
+                                                        <Form.Label>Gender</Form.Label>
+                                                        <Form.Select required
+                                                            value={formData.children[index]?.gender || ''}
+                                                            onChange={(e) => handleChildInputChange(e, index, 'gender')}
+                                                        >
+                                                            <option value="">Select</option>
+                                                            <option value="male">Male</option>
+                                                            <option value="female">Female</option>
+                                                        </Form.Select>
+                                                    </Form.Group>
+                                                    <Form.Group as={Col} controlId="formGridPassword">
+                                                        <Form.Label>Age</Form.Label>
+                                                        <Form.Control
+                                                            required
+                                                            type='text'
+                                                            placeholder="age"
+                                                            value={formData.children[index]?.age || ''}
+                                                            onChange={(e) => handleChildInputChange(e, index, 'age')}
+                                                        />
+                                                    </Form.Group>
+                                                    <Form.Group as={Col} controlId="formGridPassword">
+                                                        <Form.Label>in School ?</Form.Label>
+                                                        <Form.Select required
+                                                            value={formData.children[index]?.inschool || ''}
+                                                            onChange={(e) => handleChildInputChange(e, index, 'inschool')}
+                                                        >
+                                                            <option value="">Select</option>
+                                                            <option value="yes">Yes</option>
+                                                            <option value="no">No</option>
+                                                        </Form.Select>
+                                                    </Form.Group>
+                                                    <Form.Group as={Col} controlId="formGridPassword">
+                                                        <Form.Label>School Type</Form.Label>
+                                                        <Form.Select required
+                                                            value={formData.children[index]?.schooltype || ''}
+                                                            onChange={(e) => handleChildInputChange(e, index, 'schooltype')}
+                                                        >
+                                                            <option value="">Select</option>
+                                                            <option value="private">Private</option>
+                                                            <option value="public">Public</option>
+                                                        </Form.Select>
+                                                    </Form.Group>
+                                                    <Col>
+                                                        <MdOutlineCancel onClick={() => removeChild(index)} style={{ fontSize: "20px", cursor: "pointer", fontWeight: "300" }} />
+                                                    </Col>
+                                                </Row>
+                                            </div>
+                                        ))}
+                                        <IoAddCircle onClick={addAnotherChild} style={{ fontSize: "20px", cursor: "pointer", fontWeight: "300", color: "#27CFC8" }} />
+                                    </div>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} >
+                                            <Form.Label>Why Does She want to Join the program ?</Form.Label>
+                                            <Form.Control required as="textarea" placeholder="Why the participant want to join the program" name="reasonToJoinProgram" value={formData.reasonToJoinProgram} onChange={handleInputChange} style={{ height: '100px' }} />
+                                        </Form.Group>
+                                    </Row>
+                                </Tab>
+                                {/* end::demographics tab */}
+
+                                {/* begin::financial tab */}
+                                <Tab eventKey="Financial" title="Financial" className='pt-5'>
+                                    <h5>People who contribute to the household</h5>
+                                    <div className='d-flex flex-column justify-content-center align-content-center mb-5'>
+                                        {householdContributor.map((_, index) => (
+                                            <div key={index}>
+                                                <h6>Contributor {index + 1}</h6>
+                                                <Row className="mb-3">
+                                                    <Form.Group as={Col}>
+                                                        <Form.Label>Name</Form.Label>
+                                                        <Form.Control required type='text' placeholder="Full Names"
+                                                            value={formData.contributors[index]?.namee || ''}
+                                                            onChange={(e) => handleHouseholdInputChange(e, index, 'namee')}
+                                                        />
+                                                    </Form.Group>
+                                                    <Form.Group as={Col}>
+                                                        <Form.Label>Relationship</Form.Label>
+                                                        <Form.Control required type='text' placeholder="Relationship"
+                                                            value={formData.contributors[index]?.relationship || ''}
+                                                            onChange={(e) => handleHouseholdInputChange(e, index, 'relationship')}
+                                                        />
+                                                    </Form.Group>
+                                                    <Form.Group as={Col} controlId="formGridPassword">
+                                                        <Form.Label>Primary Provider ?</Form.Label>
+                                                        <Form.Select
+                                                            required
+                                                            value={formData.contributors[index]?.primarypro || ''}
+                                                            onChange={(e) => handleHouseholdInputChange(e, index, 'primarypro')}
+                                                        >
+                                                            <option value="">Select</option>
+                                                            <option value="yes">Yes</option>
+                                                            <option value="no">NO</option>
+                                                        </Form.Select>
+                                                    </Form.Group>
+                                                    <Form.Group as={Col} >
+                                                        <Form.Label>Money/Food ?</Form.Label>
+                                                        <Form.Select
+                                                            required
+                                                            value={formData.contributors[index]?.moneyfood || ''}
+                                                            onChange={(e) => handleHouseholdInputChange(e, index, 'moneyfood')}
+                                                        >
+                                                            <option value="">Select</option>
+                                                            <option value="yes">Yes</option>
+                                                            <option value="no">No</option>
+                                                        </Form.Select>
+                                                    </Form.Group>
+                                                    <Form.Group as={Col}  >
+                                                        <MdOutlineCancel onClick={() => removeHousehold(index)} style={{ fontSize: "20px", cursor: "pointer", fontWeight: "300" }} />
+                                                    </Form.Group>
+                                                </Row>
+                                            </div>
+                                        ))}
+                                        <IoAddCircle onClick={addAnotherContributor} style={{ fontSize: "20px", cursor: "pointer", fontWeight: "300", color: "#27CFC8" }} />
+                                    </div>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} >
+                                            <Form.Label> Is the participant the primary provider for the household ?  </Form.Label>
+                                            <Form.Select required name="participantPrimaryProvider" value={formData.participantPrimaryProvider} onChange={handleInputChange}>
+                                                <option value="">Select</option>
+                                                <option value="yes">Yes</option>
+                                                <option value="no">NO</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                        <Form.Group as={Col} >
+                                            <Form.Label> Does the participant have alternative means of income ?  </Form.Label>
+                                            <Form.Select required name="participantsAlternativeMeansOfIncome" value={formData.participantsAlternativeMeansOfIncome} onChange={handleInputChange}>
+                                                <option>Select</option>
+                                                <option value="yes">Yes</option>
+                                                <option value="no">NO</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                    </Row>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} >
+                                            <Form.Label> How does the participant pay for school fees ?  </Form.Label>
+                                            <Form.Control required as="textarea" placeholder="means of paying school fees " name="howPaySchooLFees" value={formData.howPaySchooLFees} onChange={handleInputChange} />
+                                        </Form.Group>
+                                        <Form.Group as={Col} >
+                                            <Form.Label> Specify other sources of income  </Form.Label>
+                                            <Form.Control required as="textarea" placeholder="other source of income" name="otherSourceOfIncome" value={formData.otherSourceOfIncome} onChange={handleInputChange} />
+                                        </Form.Group>
+                                    </Row>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} >
+                                            <Form.Label> How long has the participant been working in sex work ?   </Form.Label>
+                                            <Form.Control required type="text" placeholder="how long in sex work" name="howLongInSexWork" value={formData.howLongInSexWork} onChange={handleInputChange} />
+                                        </Form.Group>
+                                        <Form.Group as={Col} >
+                                            <Form.Label> How often does the participant work ?  </Form.Label>
+                                            <Form.Control required type="text" placeholder="how often work" name="howOftenWork" value={formData.howOftenWork} onChange={handleInputChange} />
+                                        </Form.Group>
+                                    </Row>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} >
+                                            <Form.Label> Previous employment/work  </Form.Label>
+                                            <Form.Control required as="textarea" placeholder="Employement History" name="previousEmployement" value={formData.previousEmployement} onChange={handleInputChange} style={{ height: '100px' }} />
+                                        </Form.Group>
+                                    </Row>
+                                </Tab>
+                                {/* end::financial tab */}
+
+                                {/* begin::physical tab */}
+                                <Tab eventKey="Physical" title="Physical" className='pt-5'>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} >
+                                            <Form.Label> General Health </Form.Label>
+                                            <Form.Control required as="textarea" placeholder="General Health" name="generalHealth" value={formData.generalHealth} onChange={handleInputChange} style={{ height: '50px' }} />
+                                        </Form.Group>
+                                    </Row>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} >
+                                            <Form.Label> HIV Testing ? </Form.Label>
+                                            <Form.Select required name="hivTesting" value={formData.hivTesting} onChange={handleInputChange}>
+                                                <option value="">Select</option>
+                                                <option value="yes">Yes</option>
+                                                <option value="no">NO</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                        <Form.Group as={Col} >
+                                            <Form.Label> Result </Form.Label>
+                                            <Form.Control required type="text" placeholder="results" name="result" value={formData.result} onChange={handleInputChange} />
+                                        </Form.Group>
+                                        <Form.Group as={Col} >
+                                            <Form.Label> Medication </Form.Label>
+                                            <Form.Control required type="text" placeholder="medication" />
+                                        </Form.Group>
+                                    </Row>
+                                    <h5>Medical History</h5>
+                                    <div className='d-flex flex-column justify-content-center align-content-center mb-5'>
+                                        {medicalHistory.map((_, index) => (
+                                            <div key={index}>
+                                                <Row className="mb-3">
+                                                    <Form.Group as={Col} >
+                                                        <Form.Label>hospitalization Illness</Form.Label>
+                                                        <Form.Control required type="text" placeholder="illness"
+                                                            value={formData.medicalhistories[index]?.hospitillness || ''}
+                                                            onChange={(e) => handleMedicalHistoryInputChange(e, index, 'hospitillness')}
+                                                        />
+                                                    </Form.Group>
+                                                    <Form.Group as={Col} >
+                                                        <Form.Label> Medication/treatment </Form.Label>
+                                                        <Form.Control required type="text" placeholder="treatement"
+                                                            value={formData.medicalhistories[index]?.medication || ''}
+                                                            onChange={(e) => handleMedicalHistoryInputChange(e, index, 'medication')}
+                                                        />
+                                                    </Form.Group>
+                                                    <Form.Group as={Col} >
+                                                        <Form.Label> Hospital/ clinic </Form.Label>
+                                                        <Form.Control required type="text" placeholder="Hospital"
+                                                            value={formData.medicalhistories[index]?.hospital || ''}
+                                                            onChange={(e) => handleMedicalHistoryInputChange(e, index, 'hospital')}
+                                                        />
+                                                    </Form.Group>
+                                                    <Form.Group as={Col} >
+                                                        <MdOutlineCancel onClick={() => removeMedical(index)} style={{ fontSize: "20px", cursor: "pointer", fontWeight: "300" }} />
+                                                    </Form.Group>
+                                                </Row>
+                                            </div>
+                                        ))}
+                                        <IoAddCircle onClick={addAnotherMedicalHistory} style={{ fontSize: "20px", cursor: "pointer", fontWeight: "300", color: "#27CFC8" }} />
+                                    </div>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} >
+                                            <Form.Label> Disabilities </Form.Label>
+                                            <Form.Control required type="text" placeholder="disabilities" name="participantDisability" value={formData.participantDisability} onChange={handleInputChange} />
+                                        </Form.Group>
+                                        <Form.Group as={Col} >
+                                            <Form.Label> Addictions </Form.Label>
+                                            <Form.Control type="text" placeholder="addiction" name="participantAddiction" value={formData.participantAddiction} onChange={handleInputChange} />
+                                        </Form.Group>
+                                        <Form.Group as={Col} >
+                                            <Form.Label> Medical Insurance </Form.Label>
+                                            <Form.Control required type="text" placeholder="medical insurance" name="participantInsurance" value={formData.participantInsurance} onChange={handleInputChange} />
+                                        </Form.Group>
+                                    </Row>
+                                    <h5>Children's Health</h5>
+                                    {formData.children.map((child, index) => (
+                                        <Row className="mb-3" key={index}>
+                                            <Form.Group as={Col}>
+                                                <Form.Label>Name</Form.Label>
+                                                <h2 className='mb-4'>{child.name}</h2>
+                                            </Form.Group>
+                                            <Form.Group as={Col} >
+                                                <Form.Label>Illness</Form.Label>
+                                                <Form.Control
+                                                    required
+                                                    type="text"
+                                                    placeholder="illness"
+                                                    value={formData.children[index]?.childillness}
+                                                    onChange={(e) => handleChildInputChange(e, index, 'child illness')}
+                                                />
+                                            </Form.Group>
+                                            <Form.Group as={Col} >
+                                                <Form.Label> Medical condition </Form.Label>
+                                                <Form.Control
+                                                    required
+                                                    type="text"
+                                                    placeholder="medical condition"
+                                                    value={formData.children[index]?.childmedicalcondition}
+                                                    onChange={(e) => handleChildInputChange(e, index, 'child medical condition')}
+                                                />
+                                            </Form.Group>
+                                            <Form.Group as={Col} >
+                                                <Form.Label> Disability </Form.Label>
+                                                <Form.Control
+                                                    required
+                                                    type="text"
+                                                    placeholder="disability"
+                                                    value={formData.children[index]?.childdisability}
+                                                    onChange={(e) => handleChildInputChange(e, index, 'child disbility')}
+                                                />
+                                            </Form.Group>
+                                        </Row>
+                                    ))}
+                                </Tab>
+                                {/* end::physical tab */}
+
+                                {/* begin::emotional tab */}
+                                <Tab eventKey="Emotional" title="Emotional" className='pt-5'>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} >
+                                            <Form.Label>Where was the participant born and raised ?</Form.Label>
+                                            <Form.Control required type="text" placeholder="birth/born place" name="bornAndRaised" value={formData.bornAndRaised} onChange={handleInputChange} />
+                                        </Form.Group>
+                                        <Form.Group as={Col} >
+                                            <Form.Label> How does the participant describe her childhood ? </Form.Label>
+                                            <Form.Control required type="text" placeholder="childhood description" name="childHoodDescription" value={formData.childHoodDescription} onChange={handleInputChange} />
+                                        </Form.Group>
+                                    </Row>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} >
+                                            <Form.Label> Does the participant have any history of mental illness ?</Form.Label>
+                                            <Form.Select required name="mentaIllnessHistory" value={formData.mentaIllnessHistory} onChange={handleInputChange}>
+                                                <option value="">Select</option>
+                                                <option value="yes">Yes</option>
+                                                <option value="no">NO</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                        <Form.Group as={Col} >
+                                            <Form.Label> Comments </Form.Label>
+                                            <Form.Control required type="text" placeholder="comments on mental illness" name="commentsOnMentalHistory" value={formData.commentsOnMentalHistory} onChange={handleInputChange} />
+                                        </Form.Group>
+                                    </Row>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} >
+                                            <Form.Label> How does the participant describe her current emotions/emotional health ? </Form.Label>
+                                            <Form.Control required as="textarea" placeholder="current emotions/emotional health" name="emotionalHealth" value={formData.emotionalHealth} onChange={handleInputChange} style={{ height: "80px" }} />
+                                        </Form.Group>
+                                    </Row>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} >
+                                            <Form.Label> Does the participant have other family members that assist the family ?  </Form.Label>
+                                            <Form.Select required name='otherMemberThatAssist' value={formData.otherMemberThatAssist} onChange={handleInputChange}>
+                                                <option value="">Select</option>
+                                                <option value="yes">Yes</option>
+                                                <option value="no">NO</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                    </Row>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} >
+                                            <Form.Label> Relationship with community</Form.Label>
+                                            <Form.Select required name="relationShipWithCommunity" value={formData.relationShipWithCommunity} onChange={handleInputChange} >
+                                                <option value="">Select</option>
+                                                <option value="good">Good</option>
+                                                <option value="fair">Fair</option>
+                                                <option value="poor">Poor</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                        <Form.Group as={Col} >
+                                            <Form.Label> Comments </Form.Label>
+                                            <Form.Control required type="text" placeholder="comments on relation with community" name="commentsOnRelationShipWithCommunity" value={formData.commentsOnRelationShipWithCommunity} onChange={handleInputChange} />
+                                        </Form.Group>
+                                    </Row>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} >
+                                            <Form.Label> Does she have Friends ?</Form.Label>
+                                            <Form.Select required name="haveFriends" value={formData.haveFriends} onChange={handleInputChange} >
+                                                <option value="">Select</option>
+                                                <option value="yes">Yes</option>
+                                                <option value="no">No</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                        <Form.Group as={Col} >
+                                            <Form.Label> Comments </Form.Label>
+                                            <Form.Control required type="text" placeholder="comments her friends" name="commentsOnHaveFriends" value={formData.commentsOnHaveFriends} onChange={handleInputChange} />
+                                        </Form.Group>
+                                    </Row>
+                                </Tab>
+                                {/* end::emotional tab */}
+
+                                {/* begin::spiritual tab */}
+                                <Tab eventKey="Spiritual" title="Spiritual" className='pt-5'>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} >
+                                            <Form.Label> Does the participant practice a religion?  </Form.Label>
+                                            <Form.Select required name='practiceReligion' value={formData.practiceReligion} onChange={handleInputChange} >
+                                                <option value="">Select</option>
+                                                <option value="yes">Yes</option>
+                                                <option value="no">No</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                        <Form.Group as={Col} >
+                                            <Form.Label> if Yes , please Specify </Form.Label>
+                                            <Form.Control required type="text" placeholder="religious specifications" name="specifyReligion" value={formData.specifyReligion} onChange={handleInputChange} />
+                                        </Form.Group>
+                                    </Row>
+                                    <Row className="mb-3">
+                                        <Form.Group as={Col} >
+                                            <Form.Label> What is her/his involvement with this religious community ?  </Form.Label>
+                                            <Form.Select required name="involvementWithReligious" value={formData.involvementWithReligious} onChange={handleInputChange} >
+                                                <option value="">Select</option>
+                                                <option value="active">Active</option>
+                                                <option value="nominal">Nominak</option>
+                                                <option value="nonactive">Non-active</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                    </Row>
+                                </Tab>
+                                {/* end::spiritual tab */}
+
+                            </Tabs>
+                            {/* begin::Actions */}
+                            <div className="text-center pt-15">
+                                <button
+                                    type="reset"
+                                    className="btn btn-light me-3"
+                                    data-kt-users-modal-action="cancel"
+                                >
+                                    Discard
+                                </button>
+                                <button
+                                    onClick={handleSubmit}
+                                    type="submit"
+                                    className="btn btn-primary"
+                                    data-kt-users-modal-action="submit"
+                                >
+                                    <span className="indicator-label">
+                                        Submit
+                                    </span>
+                                </button>
+                            </div>
+                            {/* end::Actions */}
+                        </form>
                     </div>
-                  </>
-                )}
-                {/* end::Sizes Inputs */}
-              </div>
+                </section >
+            </div >
+        </>
+    )
+}
 
-              {/* begin::Input group */}
-              <div className="fv-row mb-7">
-                {/* begin::Label */}
-                <label className="required fw-bold fs-6 mb-2">
-                  Description
-                </label>
-                {/* end::Label */}
-
-                {/* begin::Input */}
-                <textarea
-                  {...formik.getFieldProps(
-                    'description'
-                  )}
-                  name="description"
-                  id=""
-                  className={clsx(
-                    'form-control form-control-solid mb-3 mb-lg-0',
-                    {
-                      'is-invalid':
-                        formik.touched &&
-                        formik.errors.description
-                    },
-                    {
-                      'is-valid':
-                        formik.touched.name &&
-                        !formik.errors.description
-                    }
-                  )}
-                  autoComplete="off"
-                  disabled={
-                    formik.isSubmitting ||
-                    loadingCategories
-                  }
-                ></textarea>
-              </div>
-              {/* end::Input group */}
-
-              {/* begin::Actions */}
-              <div className="text-center pt-15">
-                <button
-                  type="reset"
-                  className="btn btn-light me-3"
-                  data-kt-users-modal-action="cancel"
-                >
-                  Discard
-                </button>
-
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  data-kt-users-modal-action="submit"
-                  disabled={
-                    loadingCategories ||
-                    formik.isSubmitting ||
-                    !formik.isValid ||
-                    !formik.touched
-                  }
-                >
-                  {!loadingCategories &&
-                    !formik.isSubmitting && (
-                      <span className="indicator-label">
-                        Submit
-                      </span>
-                    )}
-                  {(loadingCategories ||
-                    formik.isSubmitting) && (
-                      <span
-                        className="indicator-progress"
-                        style={{ display: 'block' }}
-                      >
-                        Please wait...
-                        <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
-                      </span>
-                    )}
-                </button>
-              </div>
-              {/* end::Actions */}
-            </form>
-          </div>
-        </section >
-
-        {(loadingCategories ||
-          formik.isSubmitting) && (
-            <ProcessingLoader />
-          )
-        }
-      </div >
-    </>
-  );
-};
-
-export default AddWomen;
+export default AddWomen

@@ -9,10 +9,9 @@ import { delete_images, upload_images } from './utils';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { edit_product, fetch_products, get_product_by_id } from '../../../redux/products/actions';
 import { fetchCategories } from '../../../redux/features/categories/categoriesActions'
-import { women_schema } from './AddWomen';
+import { Woman } from './women-list/core/_models'
 import { ProcessingLoader } from '../../../components/loaders/processingLoader'
 
-type ProductForm = Yup.InferType<typeof women_schema>;
 
 const EditWomen = () => {
   const navigate = useNavigate();
@@ -73,7 +72,7 @@ const EditWomen = () => {
     fetchProduct();
   }, [dispatch, productId]);
 
-  const initial_values: ProductForm = {
+  const initial_values: any = {
     name: productToEdit?.name ?? '',
     description: productToEdit?.description ?? '',
     category_id: productToEdit?.category_id ?? '',
@@ -97,21 +96,9 @@ const EditWomen = () => {
     patternOrColor: productToEdit?.patternOrColor ?? {},
   };
 
-
-  const CustomOption = ({ innerProps, label, data }) => (
-    <div {...innerProps} className='cursor-pointer mb-3 p-2 border-top'>
-      {data.image && (
-        <img src={data.image} alt="" height="30px" width="30px" style={{ marginRight: '8px' }} />
-      )}
-      <span className='text-black'>
-        {label}
-      </span>
-    </div>
-  );
   const formik = useFormik({
     initialValues: initial_values,
     enableReinitialize: true,
-    validationSchema: women_schema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       setSubmitting(true);
       try {
