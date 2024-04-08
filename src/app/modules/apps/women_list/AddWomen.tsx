@@ -258,7 +258,7 @@ const AddWomen = () => {
                                 <Tab eventKey="Demographics" title="Demographics" className='pt-5'>
                                     <Row className="mb-3">
                                         <Form.Group as={Col} controlId="formFile" className="mb-3">
-                                            <Form.Label>Image</Form.Label>
+                                            <Form.Label>Woman Image</Form.Label>
                                             <Form.Control required type="file" name="image" onChange={handleInputChange} />
                                         </Form.Group>
                                         <Form.Group as={Col} >
