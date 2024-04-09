@@ -17,6 +17,7 @@ import ProjectsPage from '../modules/apps/projects/ProjectsPage';
 import { DashboardWrapper } from '../pages/dashboard/DashboardWrapper';
 import AddWomen from '../modules/apps/women_list/AddWomen';
 import WomenList from '../modules/apps/women_list/WomenPage'
+import Cohorts from "../modules/apps/cohort/CohortsPage"
 
 const PrivateRoutes = () => {
   const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'));
@@ -150,6 +151,7 @@ const PrivateRoutes = () => {
         <Route path='apps/women/add' element={<AddWomen />} />
         <Route path="apps/products/add" element={<AddProduct />} />
         <Route path="apps/list/women" element={<WomenList />} />
+        <Route path="apps/list/cohorts/*" element={<Cohorts />} />
         <Route path="apps/products/:productId/edit" element={<EditProduct />} />
         <Route path="apps/products/:productId" element={<ProductDetails />} />
         <Route path="*" element={<Navigate to="/error/404" />} />

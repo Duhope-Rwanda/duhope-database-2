@@ -38,6 +38,13 @@ const SidebarMenuMain = () => {
       />
 
       <SidebarMenuItem
+        to="/apps/list/cohorts"
+        icon="abstract-28"
+        title="Cohorts"
+        fontIcon="bi-layers"
+      />
+
+      <SidebarMenuItem
         to="/apps/orders"
         icon="abstract-28"
         title="Orders"

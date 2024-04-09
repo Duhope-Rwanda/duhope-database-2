@@ -11,9 +11,14 @@ const womenColumns: ReadonlyArray<Column<User>> = [
   // 	// accessor: 'id',
   // },
   {
-    Header: (props) => <WomenCustomHeader tableProps={props} title="Name" className="min-w-125px" />,
-    id: 'name',
-    accessor: 'name'
+    Header: (props) => <WomenCustomHeader tableProps={props} title="First Name" className="min-w-125px" />,
+    id: 'firstName',
+    accessor: 'firstName'
+  },
+  {
+    Header: (props) => <WomenCustomHeader tableProps={props} title="Last Name" className="min-w-125px" />,
+    id: 'lastName',
+    accessor: 'lastName'
   },
   {
     Header: (props) => (
@@ -23,19 +28,11 @@ const womenColumns: ReadonlyArray<Column<User>> = [
   },
   {
     Header: (props) => (
-      <WomenCustomHeader tableProps={props} title="Description" className="max-w-125px" />
+      <WomenCustomHeader tableProps={props} title="Age" className="max-w-125px" />
     ),
-    id: 'description',
-    accessor: 'description'
+    id: 'age',
+    accessor: 'age'
   },
-
-  {
-    Header: (props) => (
-      <WomenCustomHeader tableProps={props} title="Stock" className="min-w-125px" />
-    ),
-    accessor: 'stock'
-  },
-
   {
     Header: (props) => (
       <WomenCustomHeader tableProps={props} title="Actions" className="text-end min-w-100px" />
